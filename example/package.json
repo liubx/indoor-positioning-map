@@ -5,11 +5,14 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "indoor-positioning-map": "file:..",
+    "lodash": "^4.17.11",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-scripts": "^1.1.4",
-    "indoor-positioning-map": "file:.."
+    "rxjs": "^5.5.11",
+    "rxjs-compat": "^6.3.3"
   },
   "scripts": {
     "start": "react-scripts start",
