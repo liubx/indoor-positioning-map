@@ -1,7 +1,8 @@
 /* global window */
 /* eslint no-undef: "error" */
 import { Component } from 'react';
-import Rx from 'rxjs/Rx';
+import { of } from 'rxjs';
+import { filter, tap } from 'rxjs/operators';
 import PropTypes from 'prop-types';
 import { BASE_URL } from '../constant';
 import ImageLayer from 'ol/layer/Image';
@@ -32,30 +33,32 @@ class OlPoiLayer extends Component {
   }
 
   loadPoi(map) {
-    Rx.Observable.of(map)
-      .filter(
-        (map) =>
-          map !== null &&
-          map !== undefined &&
-          map.poiLayerId !== null &&
-          map.poiLayerId !== undefined
+    of(map)
+      .pipe(
+        filter(
+          (map) =>
+            map !== null &&
+            map !== undefined &&
+            map.poiLayerId !== null &&
+            map.poiLayerId !== undefined
+        ),
+        tap((map) => {
+          this.layer.setSource(
+            new ImageWMS({
+              url: `${BASE_URL}:9010/geoserver/${
+                map.poiLayerId.split(':')[0]
+              }/wms`,
+              params: {
+                FORMAT: 'image/png',
+                VERSION: '1.1.1',
+                STYLES: '',
+                LAYERS: map.poiLayerId
+              },
+              serverType: 'geoserver'
+            })
+          );
+        })
       )
-      .do((map) => {
-        this.layer.setSource(
-          new ImageWMS({
-            url: `${BASE_URL}:9010/geoserver/${
-              map.poiLayerId.split(':')[0]
-            }/wms`,
-            params: {
-              FORMAT: 'image/png',
-              VERSION: '1.1.1',
-              STYLES: '',
-              LAYERS: map.poiLayerId
-            },
-            serverType: 'geoserver'
-          })
-        );
-      })
       .subscribe();
   }
 

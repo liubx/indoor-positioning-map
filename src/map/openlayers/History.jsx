@@ -1,7 +1,8 @@
 /* global window */
 /* eslint no-undef: "error" */
 import { Component } from 'react';
-import Rx from 'rxjs/Rx';
+import { of } from 'rxjs';
+import { tap, filter } from 'rxjs/operators';
 import PropTypes from 'prop-types';
 import { BASE_URL } from '../constant';
 import TileLayer from 'ol/layer/Tile';
@@ -32,45 +33,47 @@ class OlHistoryLayer extends Component {
       this.layer.setSource(null);
       return;
     }
-    Rx.Observable.of(history)
-      .filter(
-        (history) =>
-          history !== null &&
-          history !== undefined &&
-          history.layerId !== null &&
-          history.layerId !== undefined &&
-          history.start_time !== null &&
-          history.start_time !== undefined &&
-          history.end_time !== null &&
-          history.end_time !== undefined &&
-          history.floor !== null &&
-          history.floor !== undefined
+    of(history)
+      .pipe(
+        filter(
+          (history) =>
+            history !== null &&
+            history !== undefined &&
+            history.layerId !== null &&
+            history.layerId !== undefined &&
+            history.start_time !== null &&
+            history.start_time !== undefined &&
+            history.end_time !== null &&
+            history.end_time !== undefined &&
+            history.floor !== null &&
+            history.floor !== undefined
+        ),
+        tap((history) => {
+          this.layer.setSource(
+            new TileWMS({
+              url: `${BASE_URL}:9010/geoserver/${
+                history.layerId.split(':')[0]
+              }/wms`,
+              params: {
+                FORMAT: 'image/png',
+                VERSION: '1.1.1',
+                STYLES: '',
+                LAYERS: history.layerId,
+                VIEWPARAMS: `distance:0.1;${
+                  history.floor ? 'floor:' + history.floor + ';' : ''
+                }${
+                  history.start_time ? 'start:' + history.start_time + ';' : ''
+                }${history.end_time ? 'end:' + history.end_time + ';' : ''}${
+                  history.userId ? 'user:' + history.userId + ';' : ''
+                }`
+              },
+              serverType: 'geoserver',
+              singleTile: true,
+              ratio: 1
+            })
+          );
+        })
       )
-      .do((history) => {
-        this.layer.setSource(
-          new TileWMS({
-            url: `${BASE_URL}:9010/geoserver/${
-              history.layerId.split(':')[0]
-            }/wms`,
-            params: {
-              FORMAT: 'image/png',
-              VERSION: '1.1.1',
-              STYLES: '',
-              LAYERS: history.layerId,
-              VIEWPARAMS: `distance:0.1;${
-                history.floor ? 'floor:' + history.floor + ';' : ''
-              }${
-                history.start_time ? 'start:' + history.start_time + ';' : ''
-              }${history.end_time ? 'end:' + history.end_time + ';' : ''}${
-                history.userId ? 'user:' + history.userId + ';' : ''
-              }`
-            },
-            serverType: 'geoserver',
-            singleTile: true,
-            ratio: 1
-          })
-        );
-      })
       .subscribe();
   }
 

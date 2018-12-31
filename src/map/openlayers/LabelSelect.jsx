@@ -1,7 +1,8 @@
 /* global android */
 /* eslint no-undef: "error" */
 import React, { Component } from 'react';
-import Rx from 'rxjs/Rx';
+import { of, fromEvent } from 'rxjs';
+import { tap, filter, flatMap, map } from 'rxjs/operators';
 import Overlay from 'ol/Overlay';
 import Style from 'ol/style/Style';
 import PropTypes from 'prop-types';
@@ -31,28 +32,30 @@ class OlLabelSelectLayer extends Component {
     });
     this.context.map.addOverlay(this.layer);
 
-    Rx.Observable.fromEvent(this.context.map, 'singleclick')
-      .filter((e) => !e.dragging)
-      .map((e) => this.context.map.getEventPixel(e.originalEvent))
-      .map((pixel) =>
-        this.context.map.forEachFeatureAtPixel(pixel, (feature) => feature)
+    fromEvent(this.context.map, 'singleclick')
+      .pipe(
+        filter((e) => !e.dragging),
+        map((e) => this.context.map.getEventPixel(e.originalEvent)),
+        map((pixel) =>
+          this.context.map.forEachFeatureAtPixel(pixel, (feature) => feature)
+        ),
+        filter((feature) => feature && feature),
+        tap((feature) => {
+          if (
+            typeof android !== 'undefined' &&
+            typeof android.clickFeature !== 'undefined'
+          ) {
+            android.clickFeature(
+              feature && feature.data ? JSON.stringify(feature.data) : ''
+            );
+          }
+        }),
+        tap((feature) => {
+          if (this.props.onFeatureClick(feature.data)) {
+            this.loadSelect(feature.data);
+          }
+        })
       )
-      .filter((feature) => feature && feature)
-      .do((feature) => {
-        if (
-          typeof android !== 'undefined' &&
-          typeof android.clickFeature !== 'undefined'
-        ) {
-          android.clickFeature(
-            feature && feature.data ? JSON.stringify(feature.data) : ''
-          );
-        }
-      })
-      .do((feature) => {
-        if (this.props.onFeatureClick(feature.data)) {
-          this.loadSelect(feature.data);
-        }
-      })
       .subscribe();
     this.loadSelect(this.props.select);
   }
@@ -69,34 +72,37 @@ class OlLabelSelectLayer extends Component {
   }
 
   loadSelect(select) {
-    Rx.Observable.of(select)
-      .do(() => {
-        if (this.feature) {
-          this.unselectFeature(this.feature);
-          this.layer.setPosition(undefined);
-        }
-      })
-      .filter((select) => select !== null && select !== undefined)
-      .map(() => this.context.map.getLayers().getArray())
-      .flatMap((data) => data)
-      .filter((data) => data.getType() === 'VECTOR')
-      .flatMap((data) => data.getSource().getFeatures())
-      .filter((feature) => feature.data)
-      .filter((feature) =>
-        Object.keys(feature.data)
-          .filter((key) => key !== 'type')
-          .every(
-            (key) =>
-              JSON.stringify(feature.data[key]) === JSON.stringify(select[key])
-          )
+    of(select)
+      .pipe(
+        tap(() => {
+          if (this.feature) {
+            this.unselectFeature(this.feature);
+            this.layer.setPosition(undefined);
+          }
+        }),
+        filter((select) => select !== null && select !== undefined),
+        map(() => this.context.map.getLayers().getArray()),
+        flatMap((data) => data),
+        filter((data) => data.getType() === 'VECTOR'),
+        flatMap((data) => data.getSource().getFeatures()),
+        filter((feature) => feature.data),
+        filter((feature) =>
+          Object.keys(feature.data)
+            .filter((key) => key !== 'type')
+            .every(
+              (key) =>
+                JSON.stringify(feature.data[key]) ===
+                JSON.stringify(select[key])
+            )
+        ),
+        tap((feature) => {
+          this.showPopup(feature);
+          this.context.map.getView().animate({
+            center: feature.getGeometry().getCoordinates(),
+            duration: 800
+          });
+        })
       )
-      .do((feature) => {
-        this.showPopup(feature);
-        this.context.map.getView().animate({
-          center: feature.getGeometry().getCoordinates(),
-          duration: 800
-        });
-      })
       .subscribe();
   }
 

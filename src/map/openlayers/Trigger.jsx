@@ -1,7 +1,9 @@
 /* global window XMLSerializer */
 /* eslint no-undef: "error" */
 import { Component } from 'react';
-import Rx from 'rxjs/Rx';
+import { of, fromEvent } from 'rxjs';
+import { ajax } from 'rxjs/ajax';
+import { tap, filter, map, flatMap } from 'rxjs/operators';
 import GeoJSON from 'ol/format/GeoJSON';
 import WFS from 'ol/format/WFS';
 import VectorSource from 'ol/source/Vector';
@@ -22,20 +24,23 @@ class OlTriggerLayer extends Component {
         })
       })
     });
-    const { map } = this.context;
-    map.addLayer(layer);
+    this.context.map.addLayer(layer);
     this.loadTrigger(this.props.map);
-    Rx.Observable.fromEvent(map, 'singleclick')
-      .filter((e) => !e.dragging)
-      .map((e) => map.getPixelFromCoordinate(e.coordinate))
-      .map((pixel) => map.forEachFeatureAtPixel(pixel, (feature) => feature))
-      .filter(
-        (feature) =>
-          feature !== undefined &&
-          feature !== null &&
-          feature.values_.name !== undefined
+    fromEvent(this.context.map, 'singleclick')
+      .pipe(
+        filter((e) => !e.dragging),
+        map((e) => this.context.map.getPixelFromCoordinate(e.coordinate)),
+        map((pixel) =>
+          this.context.map.forEachFeatureAtPixel(pixel, (feature) => feature)
+        ),
+        filter(
+          (feature) =>
+            feature !== undefined &&
+            feature !== null &&
+            feature.values_.name !== undefined
+        ),
+        tap((feature) => console.log(feature.values_.name))
       )
-      .do((feature) => console.log(feature.values_.name))
       .subscribe();
   }
 
@@ -66,49 +71,53 @@ class OlTriggerLayer extends Component {
     }
   }
 
-  loadTrigger(map) {
-    Rx.Observable.of(map)
-      .do(() => this.source.clear())
-      .filter(
-        (map) =>
-          map !== null &&
-          map !== undefined &&
-          map.triggerLayerId !== null &&
-          map.triggerLayerId !== undefined
+  loadTrigger(indoormap) {
+    of(indoormap)
+      .pipe(
+        tap(() => this.source.clear()),
+        filter(
+          (indoormap) =>
+            indoormap !== null &&
+            indoormap !== undefined &&
+            indoormap.triggerLayerId !== null &&
+            indoormap.triggerLayerId !== undefined
+        ),
+        flatMap((indoormap) =>
+          ajax({
+            url: `${BASE_URL}:9010/geoserver/${
+              indoormap.triggerLayerId.split(':')[0]
+            }/wfs`,
+            method: 'POST',
+            body: new XMLSerializer().serializeToString(
+              new WFS().writeGetFeature({
+                srsName: 'EPSG:3857',
+                featureTypes: [indoormap.triggerLayerId],
+                outputFormat: 'application/json'
+              })
+            ),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+        ),
+        filter((e) => e.status === 200),
+        map((e) => e.response),
+        tap((json) => this.source.addFeatures(new GeoJSON().readFeatures(json)))
       )
-      .flatMap((map) =>
-        Rx.Observable.ajax({
-          url: `${BASE_URL}:9010/geoserver/${
-            map.triggerLayerId.split(':')[0]
-          }/wfs`,
-          method: 'POST',
-          body: new XMLSerializer().serializeToString(
-            new WFS().writeGetFeature({
-              srsName: 'EPSG:3857',
-              featureTypes: [map.triggerLayerId],
-              outputFormat: 'application/json'
-            })
-          ),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-      )
-      .filter((e) => e.status === 200)
-      .map((e) => e.response)
-      .do((json) => this.source.addFeatures(new GeoJSON().readFeatures(json)))
       .subscribe();
   }
 
   checkPosition(position) {
-    Rx.Observable.of(position)
-      .map((position) => [position.longitude, position.latitude])
-      .map((position) => this.context.map.getPixelFromCoordinate(position))
-      .map((pixel) =>
-        this.context.map.forEachFeatureAtPixel(pixel, (feature) => feature)
+    of(position)
+      .pipe(
+        map((position) => [position.longitude, position.latitude]),
+        map((position) => this.context.map.getPixelFromCoordinate(position)),
+        map((pixel) =>
+          this.context.map.forEachFeatureAtPixel(pixel, (feature) => feature)
+        ),
+        filter((feature) => feature !== undefined && feature !== null),
+        tap((feature) => console.log(feature.values_.name))
       )
-      .filter((feature) => feature !== undefined && feature !== null)
-      .do((feature) => console.log(feature.values_.name))
       .subscribe();
   }
 

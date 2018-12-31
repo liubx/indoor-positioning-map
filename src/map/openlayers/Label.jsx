@@ -1,5 +1,6 @@
 import { Component } from 'react';
-import Rx from 'rxjs/Rx';
+import { of } from 'rxjs';
+import { tap, filter, flatMap, map, toArray } from 'rxjs/operators';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import PropTypes from 'prop-types';
@@ -33,14 +34,16 @@ class OlLabelLayer extends Component {
   }
 
   loadData(data) {
-    Rx.Observable.of(data)
-      .do(() => this.source.clear())
-      .filter((data) => data !== null && data !== undefined)
-      .flatMap((data) => data)
-      .map((data) => this.props.createLabel(data))
-      .filter((data) => data !== null)
-      .toArray()
-      .do((feature) => this.source.addFeatures(feature))
+    of(data)
+      .pipe(
+        tap(() => this.source.clear()),
+        filter((data) => data !== null && data !== undefined),
+        flatMap((data) => data),
+        map((data) => this.props.createLabel(data)),
+        filter((data) => data !== null),
+        toArray(),
+        tap((feature) => this.source.addFeatures(feature))
+      )
       .subscribe();
   }
 

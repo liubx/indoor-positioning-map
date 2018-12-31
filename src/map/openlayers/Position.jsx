@@ -1,5 +1,6 @@
 import { Component } from 'react';
-import Rx from 'rxjs/Rx';
+import { of } from 'rxjs';
+import { tap, filter, map } from 'rxjs/operators';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import PropTypes from 'prop-types';
@@ -28,11 +29,13 @@ class OlPositionLayer extends Component {
   }
 
   loadPosition(position) {
-    Rx.Observable.of(position)
-      .do(() => this.source.clear())
-      .filter((position) => position !== null && position !== undefined)
-      .map((position) => createPositionLabel(position))
-      .do((position) => this.source.addFeature(position))
+    of(position)
+      .pipe(
+        tap(() => this.source.clear()),
+        filter((position) => position !== null && position !== undefined),
+        map((position) => createPositionLabel(position)),
+        tap((position) => this.source.addFeature(position))
+      )
       .subscribe();
   }
 

@@ -1,7 +1,8 @@
 /* global window */
 /* eslint no-undef: "error" */
 import { Component } from 'react';
-import * as Rx from 'rxjs/Rx';
+import { of } from 'rxjs';
+import { filter, tap } from 'rxjs/operators';
 import TileLayer from 'ol/layer/Tile';
 import Projection from 'ol/proj/Projection';
 import View from 'ol/View';
@@ -32,54 +33,56 @@ class OlIndoorLayer extends Component {
   }
 
   loadMap(map) {
-    Rx.Observable.of(map)
-      .filter((map) => map !== null && map !== undefined)
-      .do((map) => {
-        this.layer.setSource(
-          new WMTS({
-            url: `${BASE_URL}:9010/geoserver/gwc/service/wmts`,
-            layer: map.polygonLayerId,
-            matrixSet: TILEMATRIXSET,
-            format: 'image/png',
-            projection: new Projection({
-              code: 'EPSG:3857',
-              units: 'm',
-              axisOrientation: 'neu',
-              global: true
-            }),
-            tileGrid: new WMTSGrid({
-              tileSize: [256, 256],
-              extent: [
-                -2.003750834e7,
-                -2.003750834e7,
-                2.003750834e7,
-                2.003750834e7
-              ],
-              origin: [-2.003750834e7, 2.003750834e7],
-              resolutions: RESOLUTIONS,
-              matrixIds: TILEMATRIX
-            }),
-            style: '',
-            wrapX: true
-          })
-        );
-        this.context.map.setView(
-          new View(
-            Object.assign(
-              this.context.map.getView().options_,
-              {
-                center:
-                  map.latitude !== null && map.longitude !== null
-                    ? [map.longitude, map.latitude]
-                    : [12957000, 4852000]
-              },
-              map.xmin && map.ymin && map.xmax && map.ymax
-                ? { extent: [map.xmin, map.ymin, map.xmax, map.ymax] }
-                : {}
+    of(map)
+      .pipe(
+        filter((map) => map !== null && map !== undefined),
+        tap((map) => {
+          this.layer.setSource(
+            new WMTS({
+              url: `${BASE_URL}:9010/geoserver/gwc/service/wmts`,
+              layer: map.polygonLayerId,
+              matrixSet: TILEMATRIXSET,
+              format: 'image/png',
+              projection: new Projection({
+                code: 'EPSG:3857',
+                units: 'm',
+                axisOrientation: 'neu',
+                global: true
+              }),
+              tileGrid: new WMTSGrid({
+                tileSize: [256, 256],
+                extent: [
+                  -2.003750834e7,
+                  -2.003750834e7,
+                  2.003750834e7,
+                  2.003750834e7
+                ],
+                origin: [-2.003750834e7, 2.003750834e7],
+                resolutions: RESOLUTIONS,
+                matrixIds: TILEMATRIX
+              }),
+              style: '',
+              wrapX: true
+            })
+          );
+          this.context.map.setView(
+            new View(
+              Object.assign(
+                this.context.map.getView().options_,
+                {
+                  center:
+                    map.latitude !== null && map.longitude !== null
+                      ? [map.longitude, map.latitude]
+                      : [12957000, 4852000]
+                },
+                map.xmin && map.ymin && map.xmax && map.ymax
+                  ? { extent: [map.xmin, map.ymin, map.xmax, map.ymax] }
+                  : {}
+              )
             )
-          )
-        );
-      })
+          );
+        })
+      )
       .subscribe();
   }
 
