@@ -48,44 +48,76 @@ const Openlayers = (props) => (
     <OlIndoorLayer map={props.map} key={INDOOR_LAYER} />
     {props.showPoi ? <OlPoiLayer map={props.map} key={POI_LAYER} /> : null}
     <OlLabelLayer
-      data={props.lamps.filter((data) => data.floor === props.map.floor)}
+      data={props.lamps.filter(
+        (data) =>
+          !props.map ||
+          (props.map && props.map.floor && data.floor === props.map.floor)
+      )}
       key={LAMP_LAYER}
       createLabel={createLampLabel}
     />
     <OlLabelLayer
-      data={props.nodes.filter((data) => data.floor === props.map.floor)}
+      data={props.nodes.filter(
+        (data) =>
+          !props.map ||
+          (props.map && props.map.floor && data.floor === props.map.floor)
+      )}
       key={NODE_LAYER}
       createLabel={createNodeLabel}
     />
     <OlLabelLayer
-      data={props.targets.filter((data) => data.floor === props.map.floor)}
+      data={props.targets.filter(
+        (data) =>
+          !props.map ||
+          (props.map && props.map.floor && data.floor === props.map.floor)
+      )}
       key={TARGET_LAYER}
       createLabel={createTargetLabel}
     />
     <OlLabelLayer
-      data={props.nurses.filter((data) => data.tag.floor === props.map.floor)}
+      data={props.nurses.filter(
+        (data) =>
+          !props.map ||
+          (props.map && props.map.floor && data.tag.floor === props.map.floor)
+      )}
       key={NURSE_LAYER}
       createLabel={createNurseLabel}
     />
     <OlLabelLayer
-      data={props.seniors.filter((data) => data.tag.floor === props.map.floor)}
+      data={props.seniors.filter(
+        (data) =>
+          !props.map ||
+          (props.map && props.map.floor && data.tag.floor === props.map.floor)
+      )}
       key={SENIOR_LAYER}
       createLabel={createSeniorLabel}
     />
     <OlLabelLayer
-      data={props.supporters.filter((data) => data.floor === props.map.floor)}
+      data={props.supporters.filter(
+        (data) =>
+          !props.map ||
+          (props.map && props.map.floor && data.floor === props.map.floor)
+      )}
       key={SUPPORTER_LAYER}
       createLabel={createSupporterLabel}
     />
     <OlLabelLayer
-      data={props.users.filter((data) => data.floor === props.map.floor)}
+      data={props.users.filter(
+        (data) =>
+          !props.map ||
+          (props.map && props.map.floor && data.floor === props.map.floor)
+      )}
       key={USER_LAYER}
       createLabel={createUserLabel}
     />
     <OlRouteLayer routes={props.routes} map={props.map} key={ROUTE_LAYER} />
     <OlPositionLayer
       position={
-        props.position && props.position.floor === props.map.floor
+        !props.map ||
+        (props.map &&
+          props.map.floor &&
+          props.position &&
+          props.position.floor === props.map.floor)
           ? props.position
           : null
       }

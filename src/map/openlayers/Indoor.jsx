@@ -65,6 +65,9 @@ class OlIndoorLayer extends Component {
               wrapX: true
             })
           );
+          if (map.xmin && map.ymin && map.xmax && map.ymax) {
+            this.layer.setExtent([map.xmin, map.ymin, map.xmax, map.ymax]);
+          }
           this.context.map.setView(
             new View(
               Object.assign(

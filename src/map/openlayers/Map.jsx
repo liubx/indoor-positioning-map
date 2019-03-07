@@ -42,7 +42,7 @@ class OlMapLayer extends Component {
         new TileLayer({
           source: new XYZ({
             url:
-              'http://t{0-4}.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}'
+              'http://t{0-4}.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=9fdd40675555c6b2063333e066eda083'
           }),
           minResolution: 0.44173422609826357
         })
@@ -54,7 +54,7 @@ class OlMapLayer extends Component {
           axisOrientation: 'neu',
           global: true
         }),
-        center: [12957000, 4852000],
+        center: [12956543.5516902131, 4853897.893277171],
         zoom,
         maxZoom,
         minZoom
