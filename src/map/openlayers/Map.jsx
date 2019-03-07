@@ -4,10 +4,10 @@ import React, { Component } from 'react';
 import Map from 'ol/Map';
 import TileLayer from 'ol/layer/Tile';
 import XYZ from 'ol/source/XYZ';
-import Projection from 'ol/proj/Projection';
 import { defaults as defaultInteractions } from 'ol/interaction';
 import View from 'ol/View';
 import PropTypes from 'prop-types';
+import { get as getProjection } from 'ol/proj.js';
 
 class OlMapLayer extends Component {
   constructor(props) {
@@ -42,25 +42,22 @@ class OlMapLayer extends Component {
         new TileLayer({
           source: new XYZ({
             url:
-              'http://t{0-7}.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=111b0cbae5ef2fb8ebdf06f937b12dd8'
+              'http://t{0-7}.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=111b0cbae5ef2fb8ebdf06f937b12dd8',
+            projection: getProjection('EPSG:3857')
           }),
           minResolution: 0.44173422609826357
         }),
         new TileLayer({
           source: new XYZ({
             url:
-              'http://t{0-7}.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=111b0cbae5ef2fb8ebdf06f937b12dd8'
+              'http://t{0-7}.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=111b0cbae5ef2fb8ebdf06f937b12dd8',
+            projection: getProjection('EPSG:3857')
           }),
           minResolution: 0.44173422609826357
         })
       ],
       view: new View({
-        projection: new Projection({
-          code: 'EPSG:3857',
-          units: 'm',
-          axisOrientation: 'neu',
-          global: true
-        }),
+        projection: getProjection('EPSG:3857'),
         center: [12956543.5516902131, 4853897.893277171],
         zoom,
         maxZoom,
