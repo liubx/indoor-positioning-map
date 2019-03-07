@@ -42,7 +42,14 @@ class OlMapLayer extends Component {
         new TileLayer({
           source: new XYZ({
             url:
-              'http://t{0-4}.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=9fdd40675555c6b2063333e066eda083'
+              'http://t{0-7}.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=111b0cbae5ef2fb8ebdf06f937b12dd8'
+          }),
+          minResolution: 0.44173422609826357
+        }),
+        new TileLayer({
+          source: new XYZ({
+            url:
+              'http://t{0-7}.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=111b0cbae5ef2fb8ebdf06f937b12dd8'
           }),
           minResolution: 0.44173422609826357
         })
