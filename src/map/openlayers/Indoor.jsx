@@ -5,7 +5,6 @@ import { of } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
 import TileLayer from 'ol/layer/Tile';
 import Projection from 'ol/proj/Projection';
-import View from 'ol/View';
 import WMTS from 'ol/source/WMTS';
 import WMTSGrid from 'ol/tilegrid/WMTS';
 import PropTypes from 'prop-types';
@@ -70,22 +69,22 @@ class OlIndoorLayer extends Component {
           if (map.xmin && map.ymin && map.xmax && map.ymax) {
             this.layer.setExtent([map.xmin, map.ymin, map.xmax, map.ymax]);
           }
-          this.context.map.setView(
-            new View(
-              Object.assign(
-                this.context.map.getView().options_,
-                {
-                  center:
-                    map.latitude !== null && map.longitude !== null
-                      ? [map.longitude, map.latitude]
-                      : [12957000, 4852000]
-                },
-                map.xmin && map.ymin && map.xmax && map.ymax
-                  ? { extent: [map.xmin, map.ymin, map.xmax, map.ymax] }
-                  : {}
-              )
-            )
-          );
+        }),
+        tap((map) => {
+          if (map && map.longitude && map.latitude) {
+            this.context.map.getView().animate({
+              center: [map.longitude, map.latitude],
+              duration: 800
+            });
+          }
+          if (map && map.xmin && map.ymin && map.xmax && map.ymax) {
+            this.context.map
+              .getView()
+              .fit(
+                [map.xmin, map.ymin, map.xmax, map.ymax],
+                this.context.map.getSize()
+              );
+          }
         })
       )
       .subscribe();

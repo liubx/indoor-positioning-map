@@ -82,16 +82,16 @@ class OlControlLayer extends Component {
       this.context.map.getView().setZoom(zoom);
     };
 
-    window.zoomIn = () => {
+    window.zoomIn = (range = 1) => {
       this.context.map
         .getView()
-        .setZoom(this.context.map.getView().getZoom() + 1);
+        .setZoom(this.context.map.getView().getZoom() + range);
     };
 
-    window.zoomOut = () => {
+    window.zoomOut = (range = 1) => {
       this.context.map
         .getView()
-        .setZoom(this.context.map.getView().getZoom() - 1);
+        .setZoom(this.context.map.getView().getZoom() - range);
     };
 
     window.move = (longitude, latitude) => {

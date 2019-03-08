@@ -37,6 +37,23 @@ class OlOutdoorLayer extends Component {
         map((e) => e.response),
         map((data) => data.features),
         filter((features) => features.length),
+        filter((features) => {
+          if (
+            features.every(
+              (item) =>
+                features[0].properties.building === item.properties.building
+            )
+          ) {
+            return true;
+          } else {
+            window.zoomIn(2);
+            window.move(
+              features[0].properties.longitude,
+              features[0].properties.latitude
+            );
+            return false;
+          }
+        }),
         flatMap((features) =>
           from(features).pipe(
             map((feature) => {
@@ -55,7 +72,9 @@ class OlOutdoorLayer extends Component {
               };
             }),
             toArray(),
-            tap((features) => window.loadIndoor(features))
+            tap((features) =>
+              window.loadIndoor(features.sort((a, b) => a.floor - b.floor))
+            )
           )
         )
       )
