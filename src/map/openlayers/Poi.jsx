@@ -4,7 +4,7 @@ import { Component } from 'react';
 import { of } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
 import PropTypes from 'prop-types';
-import { BASE_URL } from '../constant';
+import { BASE_MAP_URL } from '../constant';
 import ImageLayer from 'ol/layer/Image';
 import ImageWMS from 'ol/source/ImageWMS';
 
@@ -47,9 +47,7 @@ class OlPoiLayer extends Component {
         tap((map) => {
           this.layer.setSource(
             new ImageWMS({
-              url: `${BASE_URL}:9010/geoserver/${
-                map.poiLayerId.split(':')[0]
-              }/wms`,
+              url: `${BASE_MAP_URL}/${map.poiLayerId.split(':')[0]}/wms`,
               params: {
                 FORMAT: 'image/png',
                 VERSION: '1.1.1',

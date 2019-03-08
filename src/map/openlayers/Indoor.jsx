@@ -10,7 +10,7 @@ import WMTS from 'ol/source/WMTS';
 import WMTSGrid from 'ol/tilegrid/WMTS';
 import PropTypes from 'prop-types';
 import { RESOLUTIONS, TILEMATRIX, TILEMATRIXSET } from './config';
-import { BASE_URL } from '../constant';
+import { BASE_MAP_URL } from '../constant';
 
 class OlIndoorLayer extends Component {
   componentDidMount() {
@@ -41,7 +41,7 @@ class OlIndoorLayer extends Component {
         tap((map) => {
           this.layer.setSource(
             new WMTS({
-              url: `${BASE_URL}:9010/geoserver/gwc/service/wmts`,
+              url: `${BASE_MAP_URL}/gwc/service/wmts`,
               layer: map.polygonLayerId,
               matrixSet: TILEMATRIXSET,
               format: 'image/png',

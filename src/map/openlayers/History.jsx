@@ -4,7 +4,7 @@ import { Component } from 'react';
 import { of } from 'rxjs';
 import { tap, filter } from 'rxjs/operators';
 import PropTypes from 'prop-types';
-import { BASE_URL } from '../constant';
+import { BASE_MAP_URL } from '../constant';
 import TileLayer from 'ol/layer/Tile';
 import TileWMS from 'ol/source/TileWMS';
 
@@ -51,9 +51,7 @@ class OlHistoryLayer extends Component {
         tap((history) => {
           this.layer.setSource(
             new TileWMS({
-              url: `${BASE_URL}:9010/geoserver/${
-                history.layerId.split(':')[0]
-              }/wms`,
+              url: `${BASE_MAP_URL}/${history.layerId.split(':')[0]}/wms`,
               params: {
                 FORMAT: 'image/png',
                 VERSION: '1.1.1',

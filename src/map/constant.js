@@ -38,8 +38,14 @@ export const SUPPORTER_LAYER = 'supporter';
 
 export const USER_LAYER = 'user';
 
-export const BASE_URL = `http://${
+export const BASE_MAP_URL = `http://${
+  window.location.hostname !== 'localhost'
+    ? window.location.hostname
+    : 'dev.map.reliablesense.cn'
+}/geoserver`;
+
+export const BASE_API_URL = `http://${
   window.location.hostname !== 'localhost'
     ? window.location.hostname
     : '101.200.36.227'
-}`;
+}:9000/api`;

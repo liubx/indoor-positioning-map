@@ -4,7 +4,7 @@ import { Component } from 'react';
 import Rx from 'rxjs/Rx';
 import PropTypes from 'prop-types';
 import * as L from 'leaflet';
-import { BASE_URL } from '../constant';
+import { BASE_MAP_URL } from '../constant';
 
 class LlPoiLayer extends Component {
   componentDidMount() {
@@ -42,17 +42,14 @@ class LlPoiLayer extends Component {
       .do(
         (map) =>
           (this.layer = L.tileLayer
-            .wms(
-              `${BASE_URL}:9010/geoserver/${map.poiLayerId.split(':')[0]}/wms`,
-              {
-                layers: map.poiLayerId,
-                tiled: true,
-                format: 'image/png',
-                transparent: true,
-                maxZoom: 24,
-                continuousWorld: true
-              }
-            )
+            .wms(`${BASE_MAP_URL}/${map.poiLayerId.split(':')[0]}/wms`, {
+              layers: map.poiLayerId,
+              tiled: true,
+              format: 'image/png',
+              transparent: true,
+              maxZoom: 24,
+              continuousWorld: true
+            })
             .addTo(this.context.map))
       )
       .subscribe();

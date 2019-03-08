@@ -5,7 +5,7 @@ import Rx from 'rxjs/Rx';
 import PropTypes from 'prop-types';
 import { unproject } from './util';
 import * as L from 'leaflet';
-import { BASE_URL } from '../constant';
+import { BASE_API_URL } from '../constant';
 import routeEnd from '../assets/img/route_end.png';
 import routeStart from '../assets/img/route_start.png';
 
@@ -60,7 +60,7 @@ class LlRouteLayer extends Component {
       .flatMap((routes) =>
         Rx.Observable.ajax({
           url:
-            `${BASE_URL}:9000/api/web/routing/routes?` +
+            `${BASE_API_URL}/web/routing/routes?` +
             `sourceFloor=${routes.source_floor}&sourceLongitude=${
               routes.source_longitude
             }&sourceLatitude=${routes.source_latitude}&targetFloor=${

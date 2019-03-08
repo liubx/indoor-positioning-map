@@ -8,13 +8,14 @@ import { fromEvent, from } from 'rxjs';
 import { ajax } from 'rxjs/ajax';
 import { tap, filter, map, flatMap, toArray } from 'rxjs/operators';
 import { OUTDOOR_MIN_RESOLUTION } from './config';
+import { BASE_MAP_URL } from '../constant';
 
 class OlOutdoorLayer extends Component {
   componentDidMount() {
     this.layer = new TileLayer();
     this.layer.setZIndex(0);
     this.source = new TileWMS({
-      url: 'http://dev.geoserver.reliablesense.cn/geoserver/indoor_map/wms',
+      url: `${BASE_MAP_URL}/indoor_map/wms`,
       params: { LAYERS: 'indoor_map:indoor_map', TILED: true },
       serverType: 'geoserver'
     });

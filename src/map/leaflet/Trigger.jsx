@@ -1,9 +1,9 @@
-/* global window XMLSerializer */
+/* global window */
 /* eslint no-undef: "error" */
 import { Component } from 'react';
 import Rx from 'rxjs/Rx';
 import PropTypes from 'prop-types';
-import { BASE_URL } from '../constant';
+import { BASE_MAP_URL } from '../constant';
 import * as L from 'leaflet';
 import 'proj4leaflet';
 import 'leaflet-wfst';
@@ -72,7 +72,7 @@ class LlTriggerLayer extends Component {
       })
       .flatMap((query) =>
         Rx.Observable.ajax({
-          url: `${BASE_URL}:9010/geoserver/${
+          url: `${BASE_MAP_URL}/${
             map.triggerLayerId.split(':')[0]
           }/wfs`,
           method: 'POST',

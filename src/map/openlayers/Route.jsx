@@ -23,7 +23,7 @@ import Point from 'ol/geom/Point';
 import Icon from 'ol/style/Icon';
 import LineString from 'ol/geom/LineString';
 import PropTypes from 'prop-types';
-import { BASE_URL } from '../constant';
+import { BASE_API_URL } from '../constant';
 import routeEnd from '../assets/img/route_end.png';
 import routeStart from '../assets/img/route_start.png';
 
@@ -85,7 +85,7 @@ class OlRouteLayer extends Component {
         flatMap((routes) =>
           ajax({
             url:
-              `${BASE_URL}:9000/api/web/routing/routes?` +
+              `${BASE_API_URL}/web/routing/routes?` +
               `sourceFloor=${routes.source_floor}&sourceLongitude=${
                 routes.source_longitude
               }&sourceLatitude=${routes.source_latitude}&targetFloor=${

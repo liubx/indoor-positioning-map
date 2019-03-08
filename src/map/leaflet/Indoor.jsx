@@ -5,7 +5,7 @@ import Rx from 'rxjs/Rx';
 import PropTypes from 'prop-types';
 import * as L from 'leaflet';
 import { unproject } from './util';
-import { BASE_URL } from '../constant';
+import { BASE_MAP_URL } from '../constant';
 
 class LlIndoorLayer extends Component {
   componentDidMount() {
@@ -30,9 +30,7 @@ class LlIndoorLayer extends Component {
       .do((map) => {
         L.tileLayer
           .wms(
-            `${BASE_URL}:9010/geoserver/${
-              map.polygonLayerId.split(':')[0]
-            }/wms`,
+            `${BASE_MAP_URL}/${map.polygonLayerId.split(':')[0]}/wms`,
             {
               layers: map.polygonLayerId,
               tiled: true,

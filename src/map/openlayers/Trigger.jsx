@@ -11,7 +11,7 @@ import VectorLayer from 'ol/layer/Vector';
 import Stroke from 'ol/style/Stroke';
 import Style from 'ol/style/Style';
 import PropTypes from 'prop-types';
-import { BASE_URL } from '../constant';
+import { BASE_MAP_URL } from '../constant';
 
 class OlTriggerLayer extends Component {
   componentDidMount() {
@@ -84,7 +84,7 @@ class OlTriggerLayer extends Component {
         ),
         flatMap((indoormap) =>
           ajax({
-            url: `${BASE_URL}:9010/geoserver/${
+            url: `${BASE_MAP_URL}/${
               indoormap.triggerLayerId.split(':')[0]
             }/wfs`,
             method: 'POST',

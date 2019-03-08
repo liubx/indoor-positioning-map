@@ -4,7 +4,7 @@ import { Component } from 'react';
 import { of } from 'rxjs';
 import { tap, filter } from 'rxjs/operators';
 import PropTypes from 'prop-types';
-import { BASE_URL } from '../constant';
+import { BASE_MAP_URL } from '../constant';
 import ImageWMS from 'ol/source/ImageWMS';
 import ImageLayer from 'ol/layer/Image';
 
@@ -53,9 +53,7 @@ class OlHeatmapLayer extends Component {
         tap((heatmap) => {
           this.layer.setSource(
             new ImageWMS({
-              url: `${BASE_URL}:9010/geoserver/${
-                heatmap.layerId.split(':')[0]
-              }/wms`,
+              url: `${BASE_MAP_URL}/${heatmap.layerId.split(':')[0]}/wms`,
               params: {
                 FORMAT: 'image/png',
                 VERSION: '1.1.1',
@@ -77,7 +75,7 @@ class OlHeatmapLayer extends Component {
 
           // this.layer2.setSource(
           //   new ImageWMS({
-          //     url: `${BASE_URL}:9010/geoserver/${
+          //     url: `${BASE_URL}/geoserver/${
           //       heatmap.layerId.split(':')[0]
           //     }/wms`,
           //     params: {
