@@ -2,6 +2,13 @@
 /* eslint no-undef: "error" */
 import { Component } from 'react';
 import PropTypes from 'prop-types';
+import View from 'ol/View';
+import {
+  OUTDOOR_MAX_ZOOM,
+  OUTDOOR_MIN_ZOOM,
+  INDOOR_MAX_ZOOM,
+  INDOOR_MIN_ZOOM
+} from './config';
 
 class OlControlLayer extends Component {
   componentDidMount() {
@@ -45,6 +52,34 @@ class OlControlLayer extends Component {
             this.context.map.getSize()
           );
       }
+    };
+
+    window.setIndoor = () => {
+      this.context.map.setView(
+        new View(
+          Object.assign(this.context.map.getView().options_, {
+            zoom: INDOOR_MIN_ZOOM,
+            maxZoom: INDOOR_MAX_ZOOM,
+            minZoom: INDOOR_MIN_ZOOM
+          })
+        )
+      );
+    };
+
+    window.setOutdoor = () => {
+      this.context.map.setView(
+        new View(
+          Object.assign(this.context.map.getView().options_, {
+            zoom: OUTDOOR_MAX_ZOOM,
+            maxZoom: OUTDOOR_MAX_ZOOM,
+            minZoom: OUTDOOR_MIN_ZOOM
+          })
+        )
+      );
+    };
+
+    window.zoom = (zoom) => {
+      this.context.map.getView().setZoom(zoom);
     };
 
     window.zoomIn = () => {

@@ -4,9 +4,10 @@ import { Component } from 'react';
 import TileLayer from 'ol/layer/Tile';
 import PropTypes from 'prop-types';
 import TileWMS from 'ol/source/TileWMS';
-import { fromEvent } from 'rxjs';
+import { fromEvent, from } from 'rxjs';
 import { ajax } from 'rxjs/ajax';
-import { tap, filter, map, flatMap } from 'rxjs/operators';
+import { tap, filter, map, flatMap, toArray } from 'rxjs/operators';
+import { OUTDOOR_MIN_RESOLUTION } from './config';
 
 class OlOutdoorLayer extends Component {
   componentDidMount() {
@@ -19,6 +20,7 @@ class OlOutdoorLayer extends Component {
     });
     this.context.map.addLayer(this.layer);
     this.layer.setSource(this.source);
+    this.layer.setMinResolution(OUTDOOR_MIN_RESOLUTION);
     fromEvent(this.context.map, 'singleclick')
       .pipe(
         filter((e) => !e.dragging),
@@ -32,7 +34,29 @@ class OlOutdoorLayer extends Component {
         }),
         flatMap((url) => ajax(url)),
         map((e) => e.response),
-        tap((data) => console.log(data.features))
+        map((data) => data.features),
+        filter((features) => features.length),
+        flatMap((features) =>
+          from(features).pipe(
+            map((feature) => {
+              return {
+                id: feature.id,
+                floor: feature.properties.floor,
+                latitude: feature.properties.latitude,
+                longitude: feature.properties.longitude,
+                polygonLayerId: feature.properties.polygon_layer,
+                poiLayerId: feature.properties.poi_layer,
+                routeLayerId: feature.properties.route_layer,
+                xmin: feature.properties.map_xmin,
+                ymin: feature.properties.map_ymin,
+                xmax: feature.properties.map_xmax,
+                ymax: feature.properties.map_ymax
+              };
+            }),
+            toArray(),
+            tap((features) => window.loadIndoor(features))
+          )
+        )
       )
       .subscribe();
   }

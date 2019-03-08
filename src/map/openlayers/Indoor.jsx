@@ -22,6 +22,7 @@ class OlIndoorLayer extends Component {
 
   shouldComponentUpdate(newProps) {
     return (
+      newProps.map === null ||
       ((this.props.map === null || this.props.map === undefined) &&
         newProps.map !== null) ||
       (newProps.map !== null && newProps.map !== this.props.map)
@@ -35,6 +36,7 @@ class OlIndoorLayer extends Component {
   loadMap(map) {
     of(map)
       .pipe(
+        tap(() => this.layer.setSource(null)),
         filter((map) => map !== null && map !== undefined),
         tap((map) => {
           this.layer.setSource(

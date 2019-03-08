@@ -6,6 +6,11 @@ import Openlayers from './openlayers/Openlayers';
 // import Leaflet from './leaflet/Leaflet';
 import { LEAFLET, OPENLAYERS } from './constant';
 import './assets/css/map.css';
+import back from './assets/img/back.png';
+import {
+  OUTDOOR_MAX_ZOOM,
+  OUTDOOR_MIN_ZOOM
+} from './openlayers/config';
 
 class Map extends Component {
   constructor(props) {
@@ -13,6 +18,7 @@ class Map extends Component {
     this.state = {
       type: this.props.type,
       map: this.props.map,
+      maps: this.props.maps,
       nodes: this.props.nodes,
       targets: this.props.targets,
       nurses: this.props.nurses,
@@ -33,6 +39,7 @@ class Map extends Component {
     this.setState({
       type: newProps.type,
       map: newProps.map,
+      maps: newProps.maps,
       nodes: newProps.nodes,
       targets: newProps.targets,
       nurses: newProps.nurses,
@@ -64,6 +71,22 @@ class Map extends Component {
       this.setState({
         map: data
       });
+
+    window.loadIndoor = (data) => {
+      window.setIndoor();
+      this.setState({
+        map: data[0],
+        maps: data
+      });
+    };
+
+    window.loadOutdoor = () => {
+      window.setOutdoor();
+      this.setState({
+        map: null,
+        maps: []
+      });
+    };
 
     window.loadNodes = (data) =>
       this.setState({
@@ -139,9 +162,9 @@ class Map extends Component {
       <div>
         {this.state.type === OPENLAYERS ? (
           <Openlayers
-            zoom={this.props.zoom}
-            maxZoom={this.props.maxZoom}
-            minZoom={this.props.minZoom}
+            zoom={OUTDOOR_MAX_ZOOM}
+            maxZoom={OUTDOOR_MAX_ZOOM}
+            minZoom={OUTDOOR_MIN_ZOOM}
             map={this.state.map}
             lamps={this.state.lamps}
             nodes={this.state.nodes}
@@ -181,14 +204,33 @@ class Map extends Component {
         ) : (
           ''
         )} */}
-        <select className={'floor-select'}>
-          <option value="grapefruit">Grapefruit</option>
-          <option value="lime">Lime</option>
-          <option selected value="coconut">
-            Coconut
-          </option>
-          <option value="mango">Mango</option>
-        </select>
+        {this.state.maps && this.state.maps.length ? (
+          <div className="back">
+            <img onClick={() => window.loadOutdoor()} src={back} />
+          </div>
+        ) : (
+          ''
+        )}
+        {this.state.maps && this.state.maps.length ? (
+          <select
+            className="floor-select"
+            onChange={(event) =>
+              this.setState({
+                map: this.state.maps
+                  .filter((map) => map.floor === parseInt(event.target.value))
+                  .shift()
+              })
+            }
+          >
+            {this.state.maps.map((item, index) => (
+              <option key={index} value={item.floor}>
+                {`${item.floor} 楼`}
+              </option>
+            ))}
+          </select>
+        ) : (
+          ''
+        )}
       </div>
     );
   }
@@ -197,6 +239,7 @@ class Map extends Component {
 Map.defaultProps = {
   type: OPENLAYERS,
   map: null,
+  maps: [],
   heatmap: null,
   history: null,
   showPoi: true,
@@ -210,9 +253,6 @@ Map.defaultProps = {
   supporters: [],
   users: [],
   select: null,
-  zoom: 21,
-  maxZoom: 24,
-  minZoom: 18,
   onFeatureClick: () => true,
   onSingleClick: () => false,
   onDoubleClick: () => false
@@ -221,6 +261,7 @@ Map.defaultProps = {
 Map.propTypes = {
   type: PropTypes.string,
   map: PropTypes.object,
+  maps: PropTypes.array,
   heatmap: PropTypes.object,
   history: PropTypes.object,
   showPoi: PropTypes.bool,
@@ -234,9 +275,6 @@ Map.propTypes = {
   routes: PropTypes.object,
   position: PropTypes.object,
   select: PropTypes.object,
-  zoom: PropTypes.number,
-  minZoom: PropTypes.number,
-  maxZoom: PropTypes.number,
   onFeatureClick: PropTypes.func,
   onSingleClick: PropTypes.func,
   onDoubleClick: PropTypes.func

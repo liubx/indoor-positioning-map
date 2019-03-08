@@ -18,6 +18,7 @@ class OlPoiLayer extends Component {
 
   shouldComponentUpdate(newProps) {
     return (
+      newProps.map === null ||
       ((this.props.map === null || this.props.map === undefined) &&
         newProps.map !== null) ||
       (newProps.map !== null && newProps.map !== this.props.map)
@@ -35,6 +36,7 @@ class OlPoiLayer extends Component {
   loadPoi(map) {
     of(map)
       .pipe(
+        tap(() => this.layer.setSource(null)),
         filter(
           (map) =>
             map !== null &&

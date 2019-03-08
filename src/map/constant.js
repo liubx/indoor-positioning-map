@@ -6,6 +6,8 @@ export const HEAT_MAP_LAYER = 'heatmap';
 
 export const HISTORY_LAYER = 'history';
 
+export const OUTDOOR_LAYER = 'outdoor';
+
 export const INDOOR_LAYER = 'indoor';
 
 export const POI_LAYER = 'poi';

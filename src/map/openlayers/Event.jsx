@@ -11,7 +11,16 @@ class OlEventLayer extends Component {
       .pipe(
         tap((e) => this.props.onSingleClick(e)),
         map((e) => e.coordinate),
-        tap((coordinate) => console.log(coordinate))
+        tap((coordinate) => {
+          console.log({
+            coordinate: coordinate,
+            zoom: this.context.map.getView().getZoom(),
+            resolution: this.context.map.getView().getResolution(),
+            extent: this.context.map
+              .getView()
+              .calculateExtent(this.context.map.getSize())
+          });
+        })
       )
       .subscribe();
 

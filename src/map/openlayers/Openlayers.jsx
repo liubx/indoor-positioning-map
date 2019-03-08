@@ -12,6 +12,7 @@ import OlControlLayer from './Control';
 import OlMapLayer from './Map';
 import OlIndoorLayer from './Indoor';
 import OlOutdoorLayer from './Outdoor';
+import { OUTDOOR_MAX_ZOOM, OUTDOOR_MIN_ZOOM } from './config';
 
 import {
   createLampLabel,
@@ -39,16 +40,17 @@ import {
   SUPPORTER_LAYER,
   TARGET_LAYER,
   TRIGGER_LAYER,
-  USER_LAYER
+  USER_LAYER,
+  OUTDOOR_LAYER
 } from '../constant';
 import OlHeatmapLayer from './Heatmap';
 import OlHistoryLayer from './History';
 
 const Openlayers = (props) => (
   <OlMapLayer maxZoom={props.maxZoom} minZoom={props.minZoom} zoom={props.zoom}>
-    <OlOutdoorLayer />
     <OlIndoorLayer map={props.map} key={INDOOR_LAYER} />
     {props.showPoi ? <OlPoiLayer map={props.map} key={POI_LAYER} /> : null}
+    <OlOutdoorLayer key={OUTDOOR_LAYER} />
     <OlLabelLayer
       data={props.lamps.filter(
         (data) =>
@@ -169,9 +171,9 @@ Openlayers.defaultProps = {
   supporters: [],
   users: [],
   select: null,
-  zoom: 21,
-  maxZoom: 24,
-  minZoom: 18,
+  zoom: OUTDOOR_MAX_ZOOM,
+  maxZoom: OUTDOOR_MAX_ZOOM,
+  minZoom: OUTDOOR_MIN_ZOOM,
   onFeatureClick: () => true,
   onSingleClick: () => false,
   onDoubleClick: () => false

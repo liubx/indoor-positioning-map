@@ -178,3 +178,14 @@ body {
   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.05);
   overflow: hidden;
 }
+
+.back {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+}
+
+.back img {
+  height: 40px;
+  width: 40px;
+}

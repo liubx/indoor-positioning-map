@@ -8,6 +8,11 @@ import { defaults as defaultInteractions } from 'ol/interaction';
 import View from 'ol/View';
 import PropTypes from 'prop-types';
 import { get as getProjection } from 'ol/proj.js';
+import {
+  OUTDOOR_MAX_ZOOM,
+  OUTDOOR_MIN_ZOOM,
+  OUTDOOR_MIN_RESOLUTION
+} from './config';
 
 class OlMapLayer extends Component {
   constructor(props) {
@@ -45,7 +50,7 @@ class OlMapLayer extends Component {
               'http://t{0-7}.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=111b0cbae5ef2fb8ebdf06f937b12dd8',
             projection: getProjection('EPSG:3857')
           }),
-          minResolution: 0.44173422609826357
+          minResolution: OUTDOOR_MIN_RESOLUTION
         }),
         new TileLayer({
           source: new XYZ({
@@ -53,12 +58,12 @@ class OlMapLayer extends Component {
               'http://t{0-7}.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=111b0cbae5ef2fb8ebdf06f937b12dd8',
             projection: getProjection('EPSG:3857')
           }),
-          minResolution: 0.44173422609826357
+          minResolution: OUTDOOR_MIN_RESOLUTION
         })
       ],
       view: new View({
         projection: getProjection('EPSG:3857'),
-        center: [12956543.5516902131, 4853897.893277171],
+        center: [12957000, 4852000],
         zoom,
         maxZoom,
         minZoom
@@ -85,9 +90,9 @@ class OlMapLayer extends Component {
 
 OlMapLayer.defaultProps = {
   children: null,
-  zoom: 21,
-  maxZoom: 24,
-  minZoom: 18
+  zoom: OUTDOOR_MAX_ZOOM,
+  maxZoom: OUTDOOR_MAX_ZOOM,
+  minZoom: OUTDOOR_MIN_ZOOM
 };
 
 OlMapLayer.propTypes = {
