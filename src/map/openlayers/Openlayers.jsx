@@ -11,6 +11,7 @@ import OlTriggerLayer from './Trigger';
 import OlControlLayer from './Control';
 import OlMapLayer from './Map';
 import OlIndoorLayer from './Indoor';
+import OlOutdoorLayer from './Outdoor';
 
 import {
   createLampLabel,
@@ -45,6 +46,7 @@ import OlHistoryLayer from './History';
 
 const Openlayers = (props) => (
   <OlMapLayer maxZoom={props.maxZoom} minZoom={props.minZoom} zoom={props.zoom}>
+    <OlOutdoorLayer />
     <OlIndoorLayer map={props.map} key={INDOOR_LAYER} />
     {props.showPoi ? <OlPoiLayer map={props.map} key={POI_LAYER} /> : null}
     <OlLabelLayer

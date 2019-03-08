@@ -72,12 +72,11 @@ body {
   min-height: 152px;
 }
 
-
-.ol-popup-shadow .avatar{
+.ol-popup-shadow .avatar {
   background-color: rgba(252, 139, 78, 1);
 }
 
-.ol-popup-shadow .title{
+.ol-popup-shadow .title {
   vertical-align: super;
   margin-left: 10px;
   line-height: 24px;
@@ -87,12 +86,12 @@ body {
   font-family: PingFangSC-Medium;
 }
 
-.ol-popup-shadow .subtitle{
+.ol-popup-shadow .subtitle {
   margin-top: 10px;
   width: 180px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   margin-left: 40px;
   line-height: 20px;
   color: rgba(0, 0, 0, 0.45);
@@ -101,18 +100,17 @@ body {
   font-family: PingFangSC-Regular;
 }
 
-.ol-popup-shadow .subsubtitle{
+.ol-popup-shadow .subsubtitle {
   width: 180px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   margin-left: 40px;
   line-height: 32px;
   color: rgba(0, 0, 0, 0.45);
   font-size: 16px;
   text-align: left;
   font-family: HelveticaNeue;
-
 }
 
 .detail-btn {
@@ -167,4 +165,16 @@ body {
   background-color: #9b9b9b;
   border-radius: 50%;
   display: inline-block;
+}
+
+.floor-select {
+  position: absolute;
+  height: 30px;
+  right: 20px;
+  top: 20px;
+  background: white;
+  border-radius: 3px;
+  font-size: 12px;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.05);
+  overflow: hidden;
 }
