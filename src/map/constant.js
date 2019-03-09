@@ -41,7 +41,7 @@ export const USER_LAYER = 'user';
 export const BASE_MAP_URL = `http://${
   window.location.hostname !== 'localhost'
     ? window.location.hostname
-    : 'dev.map.reliablesense.cn'
+    : 'map.reliablesense.cn'
 }/geoserver`;
 
 export const BASE_API_URL = `http://${
