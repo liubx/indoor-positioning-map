@@ -67,6 +67,7 @@ class OlControlLayer extends Component {
     };
 
     window.setOutdoor = () => {
+      const center = this.context.map.getView().getCenter();
       this.context.map.setView(
         new View(
           Object.assign(this.context.map.getView().options_, {
@@ -76,6 +77,11 @@ class OlControlLayer extends Component {
           })
         )
       );
+      this.context.map.getView().animate({
+        center: center,
+        duration: 0
+      });
+      console.log(this.context.map.getView().options_);
     };
 
     window.zoom = (zoom) => {

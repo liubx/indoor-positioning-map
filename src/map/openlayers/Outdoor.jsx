@@ -35,6 +35,7 @@ class OlOutdoorLayer extends Component {
         }),
         flatMap((url) => ajax(url)),
         map((e) => e.response),
+        filter((data) => data),
         map((data) => data.features),
         filter((features) => features.length),
         filter((features) => {

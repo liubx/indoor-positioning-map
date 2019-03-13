@@ -62,12 +62,17 @@ class OlMapLayer extends Component {
       ],
       view: new View({
         projection: getProjection('EPSG:3857'),
-        center: [12957000, 4852000],
         zoom,
         maxZoom,
         minZoom
       })
     });
+
+    this.map.getView().animate({
+      center: [12957000, 4852000],
+      duration: 0
+    });
+
     this.setState({
       loaded: true
     });
@@ -83,7 +88,14 @@ class OlMapLayer extends Component {
               .map((child) => React.cloneElement(child))
           : React.cloneElement(this.props.children);
     }
-    return <div ref={(el) => (this.ref = el)}>{children}</div>;
+    return (
+      <div
+        ref={(el) => (this.ref = el)}
+        style={{ width: window.innerWidth, height: window.innerHeight }}
+      >
+        {children}
+      </div>
+    );
   }
 }
 
