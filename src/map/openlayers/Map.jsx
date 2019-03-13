@@ -13,6 +13,7 @@ import {
   OUTDOOR_MIN_ZOOM,
   OUTDOOR_MIN_RESOLUTION
 } from './config';
+import { TIANDITU_URL } from '../constant';
 
 class OlMapLayer extends Component {
   constructor(props) {
@@ -46,16 +47,14 @@ class OlMapLayer extends Component {
       layers: [
         new TileLayer({
           source: new XYZ({
-            url:
-              'http://t{0-7}.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=111b0cbae5ef2fb8ebdf06f937b12dd8',
+            url: `${TIANDITU_URL}/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=111b0cbae5ef2fb8ebdf06f937b12dd8`,
             projection: getProjection('EPSG:3857')
           }),
           minResolution: OUTDOOR_MIN_RESOLUTION
         }),
         new TileLayer({
           source: new XYZ({
-            url:
-              'http://t{0-7}.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=111b0cbae5ef2fb8ebdf06f937b12dd8',
+            url: `${TIANDITU_URL}/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=111b0cbae5ef2fb8ebdf06f937b12dd8`,
             projection: getProjection('EPSG:3857')
           }),
           minResolution: OUTDOOR_MIN_RESOLUTION

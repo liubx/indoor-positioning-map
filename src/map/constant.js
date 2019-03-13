@@ -38,14 +38,12 @@ export const SUPPORTER_LAYER = 'supporter';
 
 export const USER_LAYER = 'user';
 
-export const BASE_MAP_URL = `${window.location.protocol}://${
-  window.location.hostname !== 'localhost'
-    ? window.location.hostname
-    : 'map.reliablesense.cn'
-}/geoserver`;
+export const TIANDITU_URL = `${
+  window.location.protocol
+}//t{0-7}.tianditu.com`;
 
-export const BASE_API_URL = `http://${
-  window.location.hostname !== 'localhost'
-    ? window.location.hostname
-    : '101.200.36.227'
-}:9000/api`;
+export const BASE_MAP_URL = `${
+  window.location.protocol
+}//map.reliablesense.cn/geoserver`;
+
+export const BASE_API_URL = 'http://101.200.36.227:9000/api';
