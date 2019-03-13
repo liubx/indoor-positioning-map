@@ -38,7 +38,7 @@ export const SUPPORTER_LAYER = 'supporter';
 
 export const USER_LAYER = 'user';
 
-export const BASE_MAP_URL = `http://${
+export const BASE_MAP_URL = `${window.location.protocol}://${
   window.location.hostname !== 'localhost'
     ? window.location.hostname
     : 'map.reliablesense.cn'
