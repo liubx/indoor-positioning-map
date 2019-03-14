@@ -7,10 +7,7 @@ import Openlayers from './openlayers/Openlayers';
 import { LEAFLET, OPENLAYERS } from './constant';
 import './assets/css/map.css';
 import back from './assets/img/back.png';
-import {
-  OUTDOOR_MAX_ZOOM,
-  OUTDOOR_MIN_ZOOM
-} from './openlayers/config';
+import { OUTDOOR_MAX_ZOOM, OUTDOOR_MIN_ZOOM } from './openlayers/config';
 
 class Map extends Component {
   constructor(props) {
@@ -67,10 +64,12 @@ class Map extends Component {
         type: LEAFLET
       });
 
-    window.loadMap = (data) =>
+    window.loadMap = (data) => {
+      window.setIndoor();
       this.setState({
         map: data
       });
+    };
 
     window.loadIndoor = (data) => {
       window.setIndoor();
