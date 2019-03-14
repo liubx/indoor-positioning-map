@@ -1,7 +1,8 @@
 /* global window */
 /* eslint no-undef: "error" */
-import { Component } from 'react';
+import React, { Component } from 'react';
 import TileLayer from 'ol/layer/Tile';
+import Overlay from 'ol/Overlay';
 import PropTypes from 'prop-types';
 import TileWMS from 'ol/source/TileWMS';
 import { fromEvent, from } from 'rxjs';
@@ -9,6 +10,7 @@ import { ajax } from 'rxjs/ajax';
 import { tap, filter, map, flatMap, toArray } from 'rxjs/operators';
 import { OUTDOOR_MIN_RESOLUTION } from './config';
 import { BASE_MAP_URL } from '../constant';
+import popup from '../assets/img/popup.png';
 
 class OlOutdoorLayer extends Component {
   componentDidMount() {
@@ -22,9 +24,17 @@ class OlOutdoorLayer extends Component {
     this.context.map.addLayer(this.layer);
     this.layer.setSource(this.source);
     this.layer.setMinResolution(OUTDOOR_MIN_RESOLUTION);
+    this.popupLayer = new Overlay({
+      element: this.ref,
+      positioning: 'bottom-center',
+      offset: [0, -10]
+    });
+    this.context.map.addOverlay(this.popupLayer);
+
     fromEvent(this.context.map, 'singleclick')
       .pipe(
         filter((e) => !e.dragging),
+        tap(() => this.popupLayer.setPosition(null)),
         map((e) => {
           return this.source.getGetFeatureInfoUrl(
             e.coordinate,
@@ -74,16 +84,35 @@ class OlOutdoorLayer extends Component {
             }),
             toArray(),
             tap((features) =>
-              window.loadIndoor(features.sort((a, b) => a.floor - b.floor))
+              // window.loadIndoor(features.sort((a, b) => a.floor - b.floor))
+              this.showPopup(features)
             )
           )
         )
       )
       .subscribe();
+
+    window.hideOutdoorPopup = () => {
+      this.popupLayer.setPosition(null);
+    };
+
+    window.showIndoorMap = () => {
+      this.popupLayer.setPosition(null);
+      window.loadIndoor(this.data.sort((a, b) => a.floor - b.floor))
+    };
   }
 
+  showPopup = (data) => {
+    this.data = data;
+    this.ref.innerHTML = `<div class='ol-popup' style='background:url(${popup}) no-repeat'><span style='display:block;'><strong>室内地图提示</strong></span><span style='display:block;margin-top: 20px;'>
+    是否进入该室内地图
+    </span>
+    <div style="margin-top: 20px;float: right;"><span style='color: #0060B6;cursor:pointer;' onclick="window.hideOutdoorPopup()">取消</span><span style='margin-left:20px;margin-right:50px;color: #0060B6;cursor:pointer;'  onclick="window.showIndoorMap()">确定</span></div></div>`;
+    this.popupLayer.setPosition([data[0].longitude, data[0].latitude]);
+  };
+
   render() {
-    return false;
+    return <div ref={(el) => (this.ref = el)} />;
   }
 }
 

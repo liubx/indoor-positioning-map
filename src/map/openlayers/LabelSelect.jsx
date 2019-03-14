@@ -37,11 +37,12 @@ class OlLabelSelectLayer extends Component {
     fromEvent(this.context.map, 'singleclick')
       .pipe(
         filter((e) => !e.dragging),
+        tap(() => this.layer.setPosition(null)),
         map((e) => this.context.map.getEventPixel(e.originalEvent)),
         map((pixel) =>
           this.context.map.forEachFeatureAtPixel(pixel, (feature) => feature)
         ),
-        filter((feature) => feature && feature),
+        filter((feature) => feature),
         tap((feature) => {
           if (
             typeof android !== 'undefined' &&
