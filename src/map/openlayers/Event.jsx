@@ -4,6 +4,8 @@ import { Component } from 'react';
 import { fromEvent } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 import PropTypes from 'prop-types';
+import { transform } from 'ol/proj';
+import { PROJECTION_3857, PROJECTION_4326 } from '../constant';
 
 class OlEventLayer extends Component {
   componentDidMount() {
@@ -13,7 +15,8 @@ class OlEventLayer extends Component {
         map((e) => e.coordinate),
         tap((coordinate) => {
           console.log({
-            coordinate: coordinate,
+            coord3857: coordinate,
+            coord4326: transform(coordinate, PROJECTION_3857, PROJECTION_4326),
             zoom: this.context.map.getView().getZoom(),
             resolution: this.context.map.getView().getResolution(),
             extent: this.context.map

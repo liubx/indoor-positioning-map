@@ -9,7 +9,9 @@ import {
   SENIOR_LAYER,
   SUPPORTER_LAYER,
   TARGET_LAYER,
-  USER_LAYER
+  USER_LAYER,
+  PROJECTION_3857,
+  PROJECTION_4326
 } from '../constant';
 
 import position from '../assets/img/position.png';
@@ -21,8 +23,29 @@ import nurse from '../assets/img/nurse.png';
 import senior from '../assets/img/senior.png';
 import supporter from '../assets/img/supporter.png';
 import user from '../assets/img/user.png';
+import { transform } from 'ol/proj';
 
 export const createPositionLabel = (data) => {
+  if (
+    data === null ||
+    data === undefined ||
+    data.latitude === null ||
+    data.latitude === undefined ||
+    data.longitude === null ||
+    data.longitude === undefined
+  ) {
+    return null;
+  }
+  if (data.projection && data.projection === PROJECTION_4326) {
+    const coordinate = transform(
+      [data.longitude, data.latitude],
+      PROJECTION_4326,
+      PROJECTION_3857
+    );
+    data.longitude = coordinate[0];
+    data.latitude = coordinate[1];
+    data.projection = PROJECTION_3857;
+  }
   const feature = new Feature({
     geometry: new Point([data.longitude, data.latitude])
   });
@@ -52,6 +75,16 @@ export const createLampLabel = (data) => {
   ) {
     return null;
   }
+  if (data.projection && data.projection === PROJECTION_4326) {
+    const coordinate = transform(
+      [data.longitude, data.latitude],
+      PROJECTION_4326,
+      PROJECTION_3857
+    );
+    data.longitude = coordinate[0];
+    data.latitude = coordinate[1];
+    data.projection = PROJECTION_3857;
+  }
   const feature = new Feature({
     geometry: new Point([data.longitude, data.latitude])
   });
@@ -79,6 +112,16 @@ export const createNodeLabel = (data) => {
     data.longitude === undefined
   ) {
     return null;
+  }
+  if (data.projection && data.projection === PROJECTION_4326) {
+    const coordinate = transform(
+      [data.longitude, data.latitude],
+      PROJECTION_4326,
+      PROJECTION_3857
+    );
+    data.longitude = coordinate[0];
+    data.latitude = coordinate[1];
+    data.projection = PROJECTION_3857;
   }
   const feature = new Feature({
     geometry: new Point([data.longitude, data.latitude])
@@ -110,7 +153,16 @@ export const createNurseLabel = (data) => {
   ) {
     return null;
   }
-
+  if (data.tag.projection && data.tag.projection === PROJECTION_4326) {
+    const coordinate = transform(
+      [data.tag.longitude, data.tag.latitude],
+      PROJECTION_4326,
+      PROJECTION_3857
+    );
+    data.tag.longitude = coordinate[0];
+    data.tag.latitude = coordinate[1];
+    data.tag.projection = PROJECTION_3857;
+  }
   const feature = new Feature({
     geometry: new Point([data.tag.longitude, data.tag.latitude])
   });
@@ -141,7 +193,16 @@ export const createSeniorLabel = (data) => {
   ) {
     return null;
   }
-
+  if (data.tag.projection && data.tag.projection === PROJECTION_4326) {
+    const coordinate = transform(
+      [data.tag.longitude, data.tag.latitude],
+      PROJECTION_4326,
+      PROJECTION_3857
+    );
+    data.tag.longitude = coordinate[0];
+    data.tag.latitude = coordinate[1];
+    data.tag.projection = PROJECTION_3857;
+  }
   const feature = new Feature({
     geometry: new Point([data.tag.longitude, data.tag.latitude])
   });
@@ -169,6 +230,16 @@ export const createTargetLabel = (data) => {
     data.longitude === undefined
   ) {
     return null;
+  }
+  if (data.projection && data.projection === PROJECTION_4326) {
+    const coordinate = transform(
+      [data.longitude, data.latitude],
+      PROJECTION_4326,
+      PROJECTION_3857
+    );
+    data.longitude = coordinate[0];
+    data.latitude = coordinate[1];
+    data.projection = PROJECTION_3857;
   }
   const feature = new Feature({
     geometry: new Point([data.longitude, data.latitude])
@@ -198,6 +269,16 @@ export const createSupporterLabel = (data) => {
   ) {
     return null;
   }
+  if (data.projection && data.projection === PROJECTION_4326) {
+    const coordinate = transform(
+      [data.longitude, data.latitude],
+      PROJECTION_4326,
+      PROJECTION_3857
+    );
+    data.longitude = coordinate[0];
+    data.latitude = coordinate[1];
+    data.projection = PROJECTION_3857;
+  }
   const feature = new Feature({
     geometry: new Point([data.longitude, data.latitude])
   });
@@ -225,6 +306,16 @@ export const createUserLabel = (data) => {
     data.longitude === undefined
   ) {
     return null;
+  }
+  if (data.projection && data.projection === PROJECTION_4326) {
+    const coordinate = transform(
+      [data.longitude, data.latitude],
+      PROJECTION_4326,
+      PROJECTION_3857
+    );
+    data.longitude = coordinate[0];
+    data.latitude = coordinate[1];
+    data.projection = PROJECTION_3857;
   }
   const feature = new Feature({
     geometry: new Point([data.longitude, data.latitude])

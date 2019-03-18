@@ -1,9 +1,15 @@
 export const OUTDOOR_MIN_RESOLUTION = 0.45;
 export const OUTDOOR_MIN_ZOOM = 2;
 export const OUTDOOR_MAX_ZOOM = 18;
+export const OUTDOOR_DEFAULT_ZOOM = 16;
 export const INDOOR_MAX_RESOLUTION = 0.3;
 export const INDOOR_MIN_ZOOM = 19;
 export const INDOOR_MAX_ZOOM = 24;
+export const INDOOR_DEFAULT_ZOOM = 19;
+
+export const DEFAULT_CENTER = [13581135.47915831, 3474532.6891957317];
+
+export const DEFAULT_PROJECTION = 'EPSG:3857';
 
 export const TILEMATRIXSET = 'EPSG:3857';
 export const TILEMATRIX = [

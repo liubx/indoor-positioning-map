@@ -12,7 +12,11 @@ import OlControlLayer from './Control';
 import OlMapLayer from './Map';
 import OlIndoorLayer from './Indoor';
 import OlOutdoorLayer from './Outdoor';
-import { OUTDOOR_MAX_ZOOM, OUTDOOR_MIN_ZOOM } from './config';
+import {
+  OUTDOOR_DEFAULT_ZOOM,
+  OUTDOOR_MAX_ZOOM,
+  OUTDOOR_MIN_ZOOM
+} from './config';
 
 import {
   createLampLabel,
@@ -171,7 +175,7 @@ Openlayers.defaultProps = {
   supporters: [],
   users: [],
   select: null,
-  zoom: OUTDOOR_MAX_ZOOM,
+  zoom: OUTDOOR_DEFAULT_ZOOM,
   maxZoom: OUTDOOR_MAX_ZOOM,
   minZoom: OUTDOOR_MIN_ZOOM,
   onFeatureClick: () => true,

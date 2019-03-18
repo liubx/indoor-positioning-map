@@ -9,6 +9,9 @@ import View from 'ol/View';
 import PropTypes from 'prop-types';
 import { get as getProjection } from 'ol/proj.js';
 import {
+  DEFAULT_CENTER,
+  DEFAULT_PROJECTION,
+  OUTDOOR_DEFAULT_ZOOM,
   OUTDOOR_MAX_ZOOM,
   OUTDOOR_MIN_ZOOM,
   OUTDOOR_MIN_RESOLUTION
@@ -58,10 +61,17 @@ class OlMapLayer extends Component {
             projection: getProjection('EPSG:3857')
           }),
           minResolution: OUTDOOR_MIN_RESOLUTION
+        }),
+        new TileLayer({
+          source: new XYZ({
+            url: `http://39.105.217.228:9002/api/wmts/gettile/4b9006155b9946d5bf259dd750084f52/{z}/{x}/{y}`,
+            projection: getProjection('EPSG:3857')
+          }),
+          minResolution: OUTDOOR_MIN_RESOLUTION
         })
       ],
       view: new View({
-        projection: getProjection('EPSG:3857'),
+        projection: getProjection(DEFAULT_PROJECTION),
         zoom,
         maxZoom,
         minZoom
@@ -69,7 +79,7 @@ class OlMapLayer extends Component {
     });
 
     this.map.getView().animate({
-      center: [12957000, 4852000],
+      center: DEFAULT_CENTER,
       duration: 0
     });
 
@@ -101,7 +111,7 @@ class OlMapLayer extends Component {
 
 OlMapLayer.defaultProps = {
   children: null,
-  zoom: OUTDOOR_MAX_ZOOM,
+  zoom: OUTDOOR_DEFAULT_ZOOM,
   maxZoom: OUTDOOR_MAX_ZOOM,
   minZoom: OUTDOOR_MIN_ZOOM
 };

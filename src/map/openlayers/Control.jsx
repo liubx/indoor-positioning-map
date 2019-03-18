@@ -6,9 +6,13 @@ import View from 'ol/View';
 import {
   OUTDOOR_MAX_ZOOM,
   OUTDOOR_MIN_ZOOM,
+  OUTDOOR_DEFAULT_ZOOM,
   INDOOR_MAX_ZOOM,
-  INDOOR_MIN_ZOOM
+  INDOOR_MIN_ZOOM,
+  INDOOR_DEFAULT_ZOOM
 } from './config';
+import { PROJECTION_3857, PROJECTION_4326 } from '../constant';
+import { transform } from 'ol/proj';
 
 class OlControlLayer extends Component {
   componentDidMount() {
@@ -58,7 +62,7 @@ class OlControlLayer extends Component {
       this.context.map.setView(
         new View(
           Object.assign(this.context.map.getView().options_, {
-            zoom: INDOOR_MIN_ZOOM,
+            zoom: INDOOR_DEFAULT_ZOOM,
             maxZoom: INDOOR_MAX_ZOOM,
             minZoom: INDOOR_MIN_ZOOM
           })
@@ -71,7 +75,7 @@ class OlControlLayer extends Component {
       this.context.map.setView(
         new View(
           Object.assign(this.context.map.getView().options_, {
-            zoom: OUTDOOR_MAX_ZOOM,
+            zoom: OUTDOOR_DEFAULT_ZOOM,
             maxZoom: OUTDOOR_MAX_ZOOM,
             minZoom: OUTDOOR_MIN_ZOOM
           })
@@ -100,7 +104,17 @@ class OlControlLayer extends Component {
         .setZoom(this.context.map.getView().getZoom() - range);
     };
 
-    window.move = (longitude, latitude) => {
+    window.move = (longitude, latitude, projection = PROJECTION_3857) => {
+      if (projection === PROJECTION_4326) {
+        const coordinate = transform(
+          [longitude, latitude],
+          PROJECTION_4326,
+          PROJECTION_3857
+        );
+        longitude = coordinate[0];
+        latitude = coordinate[1];
+        projection = PROJECTION_3857;
+      }
       this.context.map.getView().animate({
         center: [longitude, latitude],
         duration: 800

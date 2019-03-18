@@ -7,7 +7,11 @@ import Openlayers from './openlayers/Openlayers';
 import { LEAFLET, OPENLAYERS } from './constant';
 import './assets/css/map.css';
 import back from './assets/img/back.png';
-import { OUTDOOR_MAX_ZOOM, OUTDOOR_MIN_ZOOM } from './openlayers/config';
+import {
+  OUTDOOR_DEFAULT_ZOOM,
+  OUTDOOR_MAX_ZOOM,
+  OUTDOOR_MIN_ZOOM
+} from './openlayers/config';
 
 class Map extends Component {
   constructor(props) {
@@ -161,7 +165,7 @@ class Map extends Component {
       <div>
         {this.state.type === OPENLAYERS ? (
           <Openlayers
-            zoom={OUTDOOR_MAX_ZOOM}
+            zoom={OUTDOOR_DEFAULT_ZOOM}
             maxZoom={OUTDOOR_MAX_ZOOM}
             minZoom={OUTDOOR_MIN_ZOOM}
             map={this.state.map}

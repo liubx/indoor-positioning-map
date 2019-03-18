@@ -47,3 +47,7 @@ export const BASE_MAP_URL = `${
 }//map.reliablesense.cn/geoserver`;
 
 export const BASE_API_URL = 'http://101.200.36.227:9000/api';
+
+export const PROJECTION_3857 = 'EPSG:3857';
+
+export const PROJECTION_4326 = 'EPSG:4326';
