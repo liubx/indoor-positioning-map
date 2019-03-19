@@ -1,7 +1,8 @@
 /* global android */
 /* eslint no-undef: "error" */
 import { Component } from 'react';
-import Rx from 'rxjs/Rx';
+import { from } from 'rxjs';
+import { tap, filter } from 'rxjs/operators';
 import PropTypes from 'prop-types';
 import {
   LAMP_LAYER,
@@ -24,49 +25,51 @@ class LlLabelSelectLayer extends Component {
     this.context.map.eachLayer((layer) => {
       this.layers.push(layer);
     });
-    Rx.Observable.from(this.layers)
-      .filter((layer) => layer.data !== undefined)
-      .do((layer) => {
-        switch (layer.data.type) {
-          case NODE_LAYER:
-            layer.bindPopup(this.showNodePopup(layer.data), {
-              closeButton: false
-            });
-            break;
-          case TARGET_LAYER:
-            layer.bindPopup(this.showTargetPopup(layer.data), {
-              closeButton: false
-            });
-            break;
-          case LAMP_LAYER:
-            layer.bindPopup(this.showLampPopup(layer.data), {
-              closeButton: false
-            });
-            break;
-          case SENIOR_LAYER:
-            layer.bindPopup(this.showSeniorPopup(layer.data), {
-              closeButton: false
-            });
-            break;
-          case NURSE_LAYER:
-            layer.bindPopup(this.showNursePopup(layer.data), {
-              closeButton: false
-            });
-            break;
-          case USER_LAYER:
-            layer.bindPopup(this.showUserPopup(layer.data), {
-              closeButton: false
-            });
-            break;
-          case SUPPORTER_LAYER:
-            layer.bindPopup(this.showSupporterPopup(layer.data), {
-              closeButton: false
-            });
-            break;
-          default:
-            break;
-        }
-      })
+    from(this.layers)
+      .pipe(
+        filter((layer) => layer.data !== undefined),
+        tap((layer) => {
+          switch (layer.data.type) {
+            case NODE_LAYER:
+              layer.bindPopup(this.showNodePopup(layer.data), {
+                closeButton: false
+              });
+              break;
+            case TARGET_LAYER:
+              layer.bindPopup(this.showTargetPopup(layer.data), {
+                closeButton: false
+              });
+              break;
+            case LAMP_LAYER:
+              layer.bindPopup(this.showLampPopup(layer.data), {
+                closeButton: false
+              });
+              break;
+            case SENIOR_LAYER:
+              layer.bindPopup(this.showSeniorPopup(layer.data), {
+                closeButton: false
+              });
+              break;
+            case NURSE_LAYER:
+              layer.bindPopup(this.showNursePopup(layer.data), {
+                closeButton: false
+              });
+              break;
+            case USER_LAYER:
+              layer.bindPopup(this.showUserPopup(layer.data), {
+                closeButton: false
+              });
+              break;
+            case SUPPORTER_LAYER:
+              layer.bindPopup(this.showSupporterPopup(layer.data), {
+                closeButton: false
+              });
+              break;
+            default:
+              break;
+          }
+        })
+      )
       .subscribe();
   }
 

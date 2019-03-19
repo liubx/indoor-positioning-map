@@ -1,7 +1,7 @@
 /* global window */
 /* eslint no-undef: "error" */
 import React, { Component } from 'react';
-import * as L from 'leaflet';
+import L from 'leaflet';
 import PropTypes from 'prop-types';
 import { unproject } from './util';
 
