@@ -1,6 +1,6 @@
 export const OUTDOOR_MIN_RESOLUTION = 0.45;
 export const OUTDOOR_MIN_ZOOM = 2;
-export const OUTDOOR_MAX_ZOOM = 18;
+export const OUTDOOR_MAX_ZOOM = 22;
 export const OUTDOOR_DEFAULT_ZOOM = 16;
 export const INDOOR_MAX_RESOLUTION = 0.3;
 export const INDOOR_MIN_ZOOM = 19;
