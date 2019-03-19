@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Openlayers from './openlayers/Openlayers';
-// import Leaflet from './leaflet/Leaflet';
+import Leaflet from './leaflet/Leaflet';
 import { LEAFLET, OPENLAYERS } from './constant';
 import './assets/css/map.css';
 import back from './assets/img/back.png';
@@ -189,7 +189,7 @@ class Map extends Component {
         ) : (
           ''
         )}
-        {/* {this.state.type === LEAFLET ? (
+        {this.state.type === LEAFLET ? (
           <Leaflet
             map={this.state.map}
             lamps={this.state.lamps}
@@ -206,7 +206,7 @@ class Map extends Component {
           />
         ) : (
           ''
-        )} */}
+        )}
         {this.state.maps && this.state.maps.length ? (
           <div className="back">
             <img onClick={() => window.loadOutdoor()} src={back} />

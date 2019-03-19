@@ -7,7 +7,7 @@ import { BASE_MAP_URL } from '../constant';
 import * as L from 'leaflet';
 import 'proj4leaflet';
 import 'leaflet-wfst';
-import * as leafletPip from '@mapbox/leaflet-pip';
+// import * as leafletPip from '@mapbox/leaflet-pip';
 import { unproject } from './util';
 
 class LlTriggerLayer extends Component {
@@ -102,13 +102,13 @@ class LlTriggerLayer extends Component {
           this.layer !== null &&
           this.layer.getLayers().length > 0
       )
-      .map((position) =>
-        leafletPip.pointInLayer(
-          unproject(position.longitude, position.latitude),
-          this.layer.getLayers()[0]
-        )
-      )
-      .flatMap((data) => data)
+      // .map((position) =>
+      //   leafletPip.pointInLayer(
+      //     unproject(position.longitude, position.latitude),
+      //     this.layer.getLayers()[0]
+      //   )
+      // )
+      // .flatMap((data) => data)
       .do((feature) => console.log(feature.feature.properties.name))
       .subscribe();
   }
