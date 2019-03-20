@@ -24,6 +24,7 @@
   "dependencies": {
     "leaflet": "^1.4.0",
     "leaflet-wfst": "^2.0.1-beta.21",
+    "leaflet.wms": "^0.2.0",
     "ol": "^5.0.3",
     "proj4leaflet": "^1.0.2"
   },
