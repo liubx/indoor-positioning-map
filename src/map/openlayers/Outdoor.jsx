@@ -16,20 +16,14 @@ class OlOutdoorLayer extends Component {
   componentDidMount() {
     this.layer = new TileLayer();
     this.layer.setZIndex(0);
-    this.source = new TileWMS({
-      url: `${BASE_MAP_URL}/indoor_map/wms`,
-      params: { LAYERS: 'indoor_map:indoor_map', TILED: true },
-      serverType: 'geoserver'
-    });
     this.context.map.addLayer(this.layer);
-    this.layer.setSource(this.source);
-    this.layer.setMinResolution(OUTDOOR_MIN_RESOLUTION);
     this.popupLayer = new Overlay({
       element: this.ref,
       positioning: 'bottom-center',
       offset: [0, -10]
     });
     this.context.map.addOverlay(this.popupLayer);
+    this.loadIndoorMaps();
 
     fromEvent(this.context.map, 'singleclick')
       .pipe(
@@ -98,9 +92,19 @@ class OlOutdoorLayer extends Component {
 
     window.showIndoorMap = () => {
       this.popupLayer.setPosition(null);
-      window.loadIndoor(this.data.sort((a, b) => a.floor - b.floor))
+      window.loadIndoor(this.data.sort((a, b) => a.floor - b.floor));
     };
   }
+
+  loadIndoorMaps = () => {
+    this.source = new TileWMS({
+      url: `${BASE_MAP_URL}/indoor_map/wms`,
+      params: { LAYERS: 'indoor_map:indoor_map', TILED: true },
+      serverType: 'geoserver'
+    });
+    this.layer.setSource(this.source);
+    this.layer.setMinResolution(OUTDOOR_MIN_RESOLUTION);
+  };
 
   showPopup = (data) => {
     this.data = data;

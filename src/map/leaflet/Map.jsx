@@ -55,9 +55,6 @@ class LlMapLayer extends Component {
         minZoom: minZoom
       }
     ).addTo(this.map);
-    this.setState({
-      loaded: true
-    });
     L.tileLayer(
       `${TIANDITU_URL.replace(
         '{0-7}',
@@ -69,8 +66,11 @@ class LlMapLayer extends Component {
         minZoom: minZoom
       }
     ).addTo(this.map);
+    this.setState({
+      loaded: true
+    });
   }
- 
+
   render() {
     return (
       <div

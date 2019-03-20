@@ -60,6 +60,12 @@ class OlMapLayer extends Component {
             url: `http://39.105.217.228:9002/api/wmts/gettile/4b9006155b9946d5bf259dd750084f52/{z}/{x}/{y}`,
             projection: getProjection('EPSG:3857')
           }),
+          extent: [
+            13574731.18887278,
+            3469919.836022329,
+            13585338.647663247,
+            3478566.0198801826
+          ],
           maxResolution: '19'
         }),
         new TileLayer({
