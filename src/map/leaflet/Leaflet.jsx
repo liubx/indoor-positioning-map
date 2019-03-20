@@ -15,9 +15,11 @@ import {
   SUPPORTER_LAYER,
   TARGET_LAYER,
   TRIGGER_LAYER,
-  USER_LAYER
+  USER_LAYER,
+  OUTDOOR_LAYER
 } from '../constant';
 import LlMapLayer from './Map';
+import LlOutdoorLayer from './Outdoor';
 import LlIndoorLayer from './Indoor';
 import LlPoiLayer from './Poi';
 import {
@@ -45,6 +47,7 @@ import {
 
 const Leaflet = (props) => (
   <LlMapLayer maxZoom={props.maxZoom} minZoom={props.minZoom} zoom={props.zoom}>
+    <LlOutdoorLayer key={OUTDOOR_LAYER} />
     <LlIndoorLayer map={props.map} key={INDOOR_LAYER} />
     {props.showPoi ? <LlPoiLayer map={props.map} key={POI_LAYER} /> : null}
     <LlLabelLayer

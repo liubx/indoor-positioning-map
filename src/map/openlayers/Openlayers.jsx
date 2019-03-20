@@ -52,9 +52,9 @@ import OlHistoryLayer from './History';
 
 const Openlayers = (props) => (
   <OlMapLayer maxZoom={props.maxZoom} minZoom={props.minZoom} zoom={props.zoom}>
+    <OlOutdoorLayer key={OUTDOOR_LAYER} />
     <OlIndoorLayer map={props.map} key={INDOOR_LAYER} />
     {props.showPoi ? <OlPoiLayer map={props.map} key={POI_LAYER} /> : null}
-    <OlOutdoorLayer key={OUTDOOR_LAYER} />
     <OlLabelLayer
       data={props.lamps.filter(
         (data) =>
