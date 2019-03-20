@@ -45,14 +45,20 @@ class LlMapLayer extends Component {
       {
         subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
         maxZoom: maxZoom,
-        minZoom: minZoom
+        minZoom: minZoom,
+        detectRetina: true
       }
     ).addTo(this.map);
     L.tileLayer(
       `http://39.105.217.228:9002/api/wmts/gettile/4b9006155b9946d5bf259dd750084f52/{z}/{x}/{y}`,
       {
         maxZoom: maxZoom,
-        minZoom: minZoom
+        minZoom: minZoom,
+        detectRetina: true,
+        bounds: [
+          unproject(13574731.18887278, 3469919.836022329),
+          unproject(13585338.647663247 + 100, 3478566.0198801826)
+        ]
       }
     ).addTo(this.map);
     L.tileLayer(
@@ -63,7 +69,8 @@ class LlMapLayer extends Component {
       {
         subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
         maxZoom: maxZoom,
-        minZoom: minZoom
+        minZoom: minZoom,
+        detectRetina: true
       }
     ).addTo(this.map);
     this.setState({
