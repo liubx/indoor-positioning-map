@@ -11,9 +11,15 @@ class LlEventLayer extends Component {
     fromEvent(this.context.map, 'click')
       .pipe(
         map((e) => e.latlng),
-        map((latlng) => project(latlng.lng, latlng.lat)),
-        map((data) => [data.x, data.y]),
-        tap((coordinate) => console.log(coordinate))
+        tap((latlng) => {
+          const point = project(latlng.lng, latlng.lat);
+          console.log({
+            coord3857: [point.x, point.y],
+            coord4326: [latlng.lng, latlng.lat],
+            zoom: this.context.map.getZoom(),
+            extent: this.context.map.getBounds()
+          });
+        })
       )
       .subscribe();
 

@@ -37,9 +37,14 @@ import LlControlLayer from './Control';
 import LlTriggerLayer from './Trigger';
 import LlLabelSelect from './LabelSelect';
 import 'leaflet/dist/leaflet.css';
+import {
+  OUTDOOR_DEFAULT_ZOOM,
+  OUTDOOR_MAX_ZOOM,
+  OUTDOOR_MIN_ZOOM
+} from './config';
 
 const Leaflet = (props) => (
-  <LlMapLayer>
+  <LlMapLayer maxZoom={props.maxZoom} minZoom={props.minZoom} zoom={props.zoom}>
     <LlIndoorLayer map={props.map} key={INDOOR_LAYER} />
     {props.showPoi ? <LlPoiLayer map={props.map} key={POI_LAYER} /> : null}
     <LlLabelLayer
@@ -85,7 +90,14 @@ const Leaflet = (props) => (
       }
       key={POSITION_LAYER}
     />
-    <LlLabelSelect key={LABEL_SELECT_LAYER} />
+    <LlLabelSelect
+      key={LABEL_SELECT_LAYER}
+      select={
+        props.select && props.select.floor === props.map.floor
+          ? props.select
+          : null
+      }
+    />
     <LlRouteLayer routes={props.routes} map={props.map} key={ROUTE_LAYER} />
     <LlEventLayer key={EVENT_LAYER} />
     <LlControlLayer
@@ -103,6 +115,9 @@ const Leaflet = (props) => (
 
 Leaflet.defaultProps = {
   map: null,
+  zoom: OUTDOOR_DEFAULT_ZOOM,
+  maxZoom: OUTDOOR_MAX_ZOOM,
+  minZoom: OUTDOOR_MIN_ZOOM,
   showPoi: true,
   routes: null,
   position: null,
@@ -118,6 +133,9 @@ Leaflet.defaultProps = {
 
 Leaflet.propTypes = {
   map: PropTypes.object,
+  zoom: PropTypes.number,
+  minZoom: PropTypes.number,
+  maxZoom: PropTypes.number,
   showPoi: PropTypes.bool,
   lamps: PropTypes.array,
   nodes: PropTypes.array,
