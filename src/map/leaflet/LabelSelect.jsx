@@ -13,6 +13,7 @@ import {
   TARGET_LAYER,
   USER_LAYER
 } from '../constant';
+import popup from '../assets/img/popup.png';
 
 class LlLabelSelectLayer extends Component {
   constructor(props) {
@@ -25,8 +26,23 @@ class LlLabelSelectLayer extends Component {
     this.context.map.eachLayer((layer) => {
       this.layers.push(layer);
     });
+    this.initPopup();
+  }
+
+  componentWillUpdate(newProps) {
+    if (newProps.update !== this.props.update) {
+      this.initPopup();
+    }
+  }
+
+  initPopup = () => {
+    this.layers = [];
+    this.context.map.eachLayer((layer) => {
+      this.layers.push(layer);
+    });
     from(this.layers)
       .pipe(
+        tap((layer) => console.log(layer)),
         filter((layer) => layer.data !== undefined),
         tap((layer) => {
           switch (layer.data.type) {
@@ -71,11 +87,11 @@ class LlLabelSelectLayer extends Component {
         })
       )
       .subscribe();
-  }
+  };
 
   showNodePopup = (data) =>
-    `<div class='ll-popup'><span style='display:block;'><strong>蓝牙节点</strong></span><span style='display:block;'>地址:${
-      data.mac_address
+    `<div class='ll-popup' style='background:url(${popup}) no-repeat'><span style='display:block;'><strong>蓝牙节点</strong></span><span style='display:block;'>地址:${
+      data.mac_address?data.mac_address:''
     }</span><span style='display:block;'>经度:${data.longitude.toFixed(
       5
     )}</span><span style='display:block;'>纬度:${data.latitude.toFixed(
@@ -83,14 +99,14 @@ class LlLabelSelectLayer extends Component {
     )}</span></div>`;
 
   showTargetPopup = (data) =>
-    `<div class='ll-popup'><span style='display:block;'><strong>目标</strong></span><span style='display:block;'>经度:${data.longitude.toFixed(
+    `<div class='ll-popup' style='background:url(${popup}) no-repeat'><span style='display:block;'><strong>目标</strong></span><span style='display:block;'>经度:${data.longitude.toFixed(
       5
     )}</span><span style='display:block;'>纬度:${data.latitude.toFixed(
       5
     )}</span></div>`;
 
   showLampPopup = (data) =>
-    `<div class='ll-popup'><span style='display:block;'><strong>定位灯</strong></span><span style='display:block;'>经度:${data.longitude.toFixed(
+    `<div class='ll-popup' style='background:url(${popup}) no-repeat'><span style='display:block;'><strong>定位灯</strong></span><span style='display:block;'>经度:${data.longitude.toFixed(
       5
     )}</span><span style='display:block;'>纬度:${data.latitude.toFixed(
       5
@@ -101,20 +117,20 @@ class LlLabelSelectLayer extends Component {
       typeof android !== 'undefined' &&
       typeof android.showSenior !== 'undefined'
         ? `<span class='detail-btn' onclick={android.showSenior(${
-            data.id
+            data.id ? data.id : ''
           })}>查看详情</span>`
         : '';
-    return `<div class='ll-popup'><span style='display:block;'><strong>老人信息</strong></span><span style='display:block;'>电话: xxxxxxx</span><br/><span style='display:block;'>位置: xxxxxxx</span><span style='display:block;'>其他: xxxxxxx</span>${btn}</div>`;
+    return `<div class='ll-popup' style='background:url(${popup}) no-repeat'><span style='display:block;'><strong>老人信息</strong></span><span style='display:block;'>电话: xxxxxxx</span><br/><span style='display:block;'>位置: xxxxxxx</span><span style='display:block;'>其他: xxxxxxx</span>${btn}</div>`;
   };
 
   showNursePopup = (data) => {
     const btn =
       typeof android !== 'undefined' && typeof android.showNurse !== 'undefined'
         ? `<span class='detail-btn' onclick={android.showNurse(${
-            data.id
+            data.id ? data.id : ''
           })}>查看详情</span>`
         : '';
-    return `<div class='ll-popup'><span style='display:block;'><strong>护士信息</strong></span><span style='display:block;'>电话: xxxxxxx</span><br/><span style='display:block;'>位置: xxxxxxx</span><span style='display:block;'>其他: xxxxxxx</span>${btn}</div>`;
+    return `<div class='ll-popup' style='background:url(${popup}) no-repeat'><span style='display:block;'><strong>护士信息</strong></span><span style='display:block;'>电话: xxxxxxx</span><br/><span style='display:block;'>位置: xxxxxxx</span><span style='display:block;'>其他: xxxxxxx</span>${btn}</div>`;
   };
 
   /**
@@ -125,13 +141,13 @@ class LlLabelSelectLayer extends Component {
     const btn =
       typeof android !== 'undefined' && typeof android.showUser !== 'undefined'
         ? `<span class='detail-btn' onclick={android.showUser(${
-            data.id
+            data.id ? data.id : ''
           })}>查看详情</span>`
         : '';
-    return `<div class='ll-popup'><span style='display:block;'><strong>用户信息</strong></span><span style='display:block;'>${
-      data.name
+    return `<div class='ll-popup' style='background:url(${popup}) no-repeat'><span style='display:block;'><strong>用户信息</strong></span><span style='display:block;'>${
+      data.name ? data.name : ''
     }</span><br/><span style='display:block;'>用户ID: ${
-      data.id
+      data.id ? data.id : ''
     }</span>${btn}</div>`;
   };
 
@@ -144,13 +160,13 @@ class LlLabelSelectLayer extends Component {
       typeof android !== 'undefined' &&
       typeof android.showSupporter !== 'undefined'
         ? `<span class='detail-btn' onclick={android.showSupporter(${
-            data.id
+            data.id ? data.id : ''
           })}>查看详情</span>`
         : '';
-    return `<div class='ll-popup'><span style='display:block;'><strong>用户信息</strong></span><span style='display:block;'>${
-      data.name
+    return `<div class='ll-popup' style='background:url(${popup}) no-repeat'><span style='display:block;'><strong>用户信息</strong></span><span style='display:block;'>${
+      data.name ? data.name : ''
     }</span><br/><span style='display:block;'>用户ID: ${
-      data.id
+      data.id ? data.id : ''
     }</span>${btn}</div>`;
   };
 
@@ -160,11 +176,15 @@ class LlLabelSelectLayer extends Component {
 }
 
 LlLabelSelectLayer.defaultProps = {
-  select: null
+  update: false,
+  select: null,
+  onFeatureClick: () => true
 };
 
 LlLabelSelectLayer.propTypes = {
-  select: PropTypes.object
+  update: PropTypes.bool,
+  select: PropTypes.object,
+  onFeatureClick: PropTypes.func
 };
 
 LlLabelSelectLayer.contextTypes = {

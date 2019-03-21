@@ -8,6 +8,7 @@ import { createPositionLabel } from './util';
 class LlPositionLayer extends Component {
   componentDidMount() {
     this.layer = L.featureGroup().addTo(this.context.map);
+    this.layer.setZIndex(1);
     this.loadPosition(this.props.position);
   }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
   CONTROL_LAYER,
@@ -44,109 +44,165 @@ import {
   OUTDOOR_MAX_ZOOM,
   OUTDOOR_MIN_ZOOM
 } from './config';
+class Leaflet extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      update: false
+    };
+  }
+  componentWillUpdate(newProps) {
+    if (
+      newProps.lamps !== this.props.lamps ||
+      newProps.nodes !== this.props.nodes ||
+      newProps.targets !== this.props.targets ||
+      newProps.nurses !== this.props.nurses ||
+      newProps.seniors !== this.props.seniors ||
+      newProps.supporters !== this.props.supporters ||
+      newProps.users !== this.props.users
+    ) {
+      this.setState({
+        update: !this.state.update
+      });
+    }
+  }
 
-const Leaflet = (props) => (
-  <LlMapLayer maxZoom={props.maxZoom} minZoom={props.minZoom} zoom={props.zoom}>
-    <LlOutdoorLayer key={OUTDOOR_LAYER} />
-    <LlIndoorLayer map={props.map} key={INDOOR_LAYER} />
-    {props.showPoi ? <LlPoiLayer map={props.map} key={POI_LAYER} /> : null}
-    <LlLabelLayer
-      data={props.lamps.filter(
-        (data) =>
-          !props.map ||
-          (props.map && props.map.floor && data.floor === props.map.floor)
-      )}
-      key={LAMP_LAYER}
-      createLabel={createLampLabel}
-    />
-    <LlLabelLayer
-      data={props.nodes.filter(
-        (data) =>
-          !props.map ||
-          (props.map && props.map.floor && data.floor === props.map.floor)
-      )}
-      key={NODE_LAYER}
-      createLabel={createNodeLabel}
-    />
-    <LlLabelLayer
-      data={props.targets.filter(
-        (data) =>
-          !props.map ||
-          (props.map && props.map.floor && data.floor === props.map.floor)
-      )}
-      key={TARGET_LAYER}
-      createLabel={createTargetLabel}
-    />
-    <LlLabelLayer
-      data={props.nurses.filter(
-        (data) =>
-          !props.map ||
-          (props.map && props.map.floor && data.tag.floor === props.map.floor)
-      )}
-      key={NURSE_LAYER}
-      createLabel={createNurseLabel}
-    />
-    <LlLabelLayer
-      data={props.seniors.filter(
-        (data) =>
-          !props.map ||
-          (props.map && props.map.floor && data.tag.floor === props.map.floor)
-      )}
-      key={SENIOR_LAYER}
-      createLabel={createSeniorLabel}
-    />
-    <LlLabelLayer
-      data={props.supporters.filter(
-        (data) =>
-          !props.map ||
-          (props.map && props.map.floor && data.floor === props.map.floor)
-      )}
-      key={SUPPORTER_LAYER}
-      createLabel={createSupporterLabel}
-    />
-    <LlLabelLayer
-      data={props.users.filter(
-        (data) =>
-          !props.map ||
-          (props.map && props.map.floor && data.floor === props.map.floor)
-      )}
-      key={USER_LAYER}
-      createLabel={createUserLabel}
-    />
-    <LlPositionLayer
-      position={
-        !props.map ||
-        (props.map &&
-          props.map.floor &&
-          props.position &&
-          props.position.floor === props.map.floor)
-          ? props.position
-          : null
-      }
-      key={POSITION_LAYER}
-    />
-    <LlLabelSelect
-      key={LABEL_SELECT_LAYER}
-      select={
-        props.select && props.select.floor === props.map.floor
-          ? props.select
-          : null
-      }
-    />
-    <LlRouteLayer routes={props.routes} map={props.map} key={ROUTE_LAYER} />
-    <LlEventLayer key={EVENT_LAYER} />
-    <LlControlLayer
-      position={props.position}
-      map={props.map}
-      key={CONTROL_LAYER}
-    />
-    <LlTriggerLayer
-      position={props.position}
-      map={props.map}
-      key={TRIGGER_LAYER}
-    />
-  </LlMapLayer>
-);
+  render() {
+    return (
+      <LlMapLayer
+        maxZoom={this.props.maxZoom}
+        minZoom={this.props.minZoom}
+        zoom={this.props.zoom}
+      >
+        <LlOutdoorLayer key={OUTDOOR_LAYER} />
+        <LlIndoorLayer map={this.props.map} key={INDOOR_LAYER} />
+        {this.props.showPoi ? (
+          <LlPoiLayer map={this.props.map} key={POI_LAYER} />
+        ) : null}
+        <LlLabelLayer
+          data={this.props.lamps.filter(
+            (data) =>
+              !this.props.map ||
+              (this.props.map &&
+                this.props.map.floor &&
+                data.floor === this.props.map.floor)
+          )}
+          key={LAMP_LAYER}
+          createLabel={createLampLabel}
+        />
+        <LlLabelLayer
+          data={this.props.nodes.filter(
+            (data) =>
+              !this.props.map ||
+              (this.props.map &&
+                this.props.map.floor &&
+                data.floor === this.props.map.floor)
+          )}
+          key={NODE_LAYER}
+          createLabel={createNodeLabel}
+        />
+        <LlLabelLayer
+          data={this.props.targets.filter(
+            (data) =>
+              !this.props.map ||
+              (this.props.map &&
+                this.props.map.floor &&
+                data.floor === this.props.map.floor)
+          )}
+          key={TARGET_LAYER}
+          createLabel={createTargetLabel}
+        />
+        <LlLabelLayer
+          data={this.props.nurses.filter(
+            (data) =>
+              !this.props.map ||
+              (this.props.map &&
+                this.props.map.floor &&
+                data.tag.floor === this.props.map.floor)
+          )}
+          key={NURSE_LAYER}
+          createLabel={createNurseLabel}
+        />
+        <LlLabelLayer
+          data={this.props.seniors.filter(
+            (data) =>
+              !this.props.map ||
+              (this.props.map &&
+                this.props.map.floor &&
+                data.tag.floor === this.props.map.floor)
+          )}
+          key={SENIOR_LAYER}
+          createLabel={createSeniorLabel}
+        />
+        <LlLabelLayer
+          data={this.props.supporters.filter(
+            (data) =>
+              !this.props.map ||
+              (this.props.map &&
+                this.props.map.floor &&
+                data.floor === this.props.map.floor)
+          )}
+          key={SUPPORTER_LAYER}
+          createLabel={createSupporterLabel}
+        />
+        <LlLabelLayer
+          data={this.props.users.filter(
+            (data) =>
+              !this.props.map ||
+              (this.props.map &&
+                this.props.map.floor &&
+                data.floor === this.props.map.floor)
+          )}
+          key={USER_LAYER}
+          createLabel={createUserLabel}
+        />
+        <LlPositionLayer
+          position={
+            !this.props.map ||
+            (this.props.map &&
+              this.props.map.floor &&
+              this.props.position &&
+              this.props.position.floor === this.props.map.floor)
+              ? this.props.position
+              : null
+          }
+          key={POSITION_LAYER}
+        />
+        <LlLabelSelect
+          key={LABEL_SELECT_LAYER}
+          onFeatureClick={this.props.onFeatureClick}
+          select={
+            this.props.select &&
+            this.props.select.floor === this.props.map.floor
+              ? this.props.select
+              : null
+          }
+          update={this.state.update}
+        />
+        <LlRouteLayer
+          routes={this.props.routes}
+          map={this.props.map}
+          key={ROUTE_LAYER}
+        />
+        <LlEventLayer
+          key={EVENT_LAYER}
+          onSingleClick={this.props.onSingleClick}
+          onDoubleClick={this.props.onDoubleClick}
+        />
+        <LlControlLayer
+          position={this.props.position}
+          map={this.props.map}
+          key={CONTROL_LAYER}
+        />
+        <LlTriggerLayer
+          position={this.props.position}
+          map={this.props.map}
+          key={TRIGGER_LAYER}
+        />
+      </LlMapLayer>
+    );
+  }
+}
 
 Leaflet.defaultProps = {
   map: null,
@@ -163,7 +219,10 @@ Leaflet.defaultProps = {
   seniors: [],
   supporters: [],
   users: [],
-  select: null
+  select: null,
+  onFeatureClick: () => true,
+  onSingleClick: () => false,
+  onDoubleClick: () => false
 };
 
 Leaflet.propTypes = {
@@ -181,7 +240,10 @@ Leaflet.propTypes = {
   users: PropTypes.array,
   routes: PropTypes.object,
   position: PropTypes.object,
-  select: PropTypes.object
+  select: PropTypes.object,
+  onFeatureClick: PropTypes.func,
+  onSingleClick: PropTypes.func,
+  onDoubleClick: PropTypes.func
 };
 
 export default Leaflet;

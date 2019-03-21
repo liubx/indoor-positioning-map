@@ -10,6 +10,7 @@ class LlEventLayer extends Component {
   componentDidMount() {
     fromEvent(this.context.map, 'click')
       .pipe(
+        tap((e) => this.props.onSingleClick(e)),
         map((e) => e.latlng),
         tap((latlng) => {
           const point = project(latlng.lng, latlng.lat);
@@ -27,6 +28,7 @@ class LlEventLayer extends Component {
 
     fromEvent(this.context.map, 'dblclick')
       .pipe(
+        tap((e) => this.props.onDoubleClick(e)),
         map((e) => e.latlng),
         map((latlng) => project(latlng.lng, latlng.lat)),
         map((data) => [data.x, data.y]),
@@ -47,6 +49,16 @@ class LlEventLayer extends Component {
     return false;
   }
 }
+
+LlEventLayer.defaultProps = {
+  onSingleClick: () => false,
+  onDoubleClick: () => false
+};
+
+LlEventLayer.propTypes = {
+  onSingleClick: PropTypes.func,
+  onDoubleClick: PropTypes.func
+};
 
 LlEventLayer.contextTypes = {
   map: PropTypes.object

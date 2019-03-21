@@ -7,6 +7,7 @@ import L from 'leaflet';
 class LlLabelLayer extends Component {
   componentDidMount() {
     this.layer = L.featureGroup().addTo(this.context.map);
+    this.layer.setZIndex(1);
     this.loadData(this.props.data);
   }
 
