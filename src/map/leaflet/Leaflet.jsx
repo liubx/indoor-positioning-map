@@ -51,43 +51,75 @@ const Leaflet = (props) => (
     <LlIndoorLayer map={props.map} key={INDOOR_LAYER} />
     {props.showPoi ? <LlPoiLayer map={props.map} key={POI_LAYER} /> : null}
     <LlLabelLayer
-      data={props.lamps.filter((data) => data.floor === props.map.floor)}
+      data={props.lamps.filter(
+        (data) =>
+          !props.map ||
+          (props.map && props.map.floor && data.floor === props.map.floor)
+      )}
       key={LAMP_LAYER}
       createLabel={createLampLabel}
     />
     <LlLabelLayer
-      data={props.nodes.filter((data) => data.floor === props.map.floor)}
+      data={props.nodes.filter(
+        (data) =>
+          !props.map ||
+          (props.map && props.map.floor && data.floor === props.map.floor)
+      )}
       key={NODE_LAYER}
       createLabel={createNodeLabel}
     />
     <LlLabelLayer
-      data={props.targets.filter((data) => data.floor === props.map.floor)}
+      data={props.targets.filter(
+        (data) =>
+          !props.map ||
+          (props.map && props.map.floor && data.floor === props.map.floor)
+      )}
       key={TARGET_LAYER}
       createLabel={createTargetLabel}
     />
     <LlLabelLayer
-      data={props.nurses.filter((data) => data.tag.floor === props.map.floor)}
+      data={props.nurses.filter(
+        (data) =>
+          !props.map ||
+          (props.map && props.map.floor && data.tag.floor === props.map.floor)
+      )}
       key={NURSE_LAYER}
       createLabel={createNurseLabel}
     />
     <LlLabelLayer
-      data={props.seniors.filter((data) => data.tag.floor === props.map.floor)}
+      data={props.seniors.filter(
+        (data) =>
+          !props.map ||
+          (props.map && props.map.floor && data.tag.floor === props.map.floor)
+      )}
       key={SENIOR_LAYER}
       createLabel={createSeniorLabel}
     />
     <LlLabelLayer
-      data={props.supporters.filter((data) => data.floor === props.map.floor)}
+      data={props.supporters.filter(
+        (data) =>
+          !props.map ||
+          (props.map && props.map.floor && data.floor === props.map.floor)
+      )}
       key={SUPPORTER_LAYER}
       createLabel={createSupporterLabel}
     />
     <LlLabelLayer
-      data={props.users.filter((data) => data.floor === props.map.floor)}
+      data={props.users.filter(
+        (data) =>
+          !props.map ||
+          (props.map && props.map.floor && data.floor === props.map.floor)
+      )}
       key={USER_LAYER}
       createLabel={createUserLabel}
     />
     <LlPositionLayer
       position={
-        props.position && props.position.floor === props.map.floor
+        !props.map ||
+        (props.map &&
+          props.map.floor &&
+          props.position &&
+          props.position.floor === props.map.floor)
           ? props.position
           : null
       }

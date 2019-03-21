@@ -6,6 +6,7 @@ import L from 'leaflet';
 import { of } from 'rxjs';
 import { tap, filter } from 'rxjs/operators';
 import { BASE_MAP_URL } from '../constant';
+import { INDOOR_MAX_ZOOM } from './config';
 
 class LlPoiLayer extends Component {
   componentDidMount() {
@@ -44,12 +45,12 @@ class LlPoiLayer extends Component {
         tap(
           (map) =>
             (this.layer = L.tileLayer
-              .wms(`${BASE_MAP_URL}/${map.poiLayerId.split(':')[0]}/wms`, {
+              .wms(`${BASE_MAP_URL}/wms`, {
                 layers: map.poiLayerId,
                 tiled: true,
                 format: 'image/png',
                 transparent: true,
-                maxZoom: 24,
+                maxZoom: INDOOR_MAX_ZOOM,
                 continuousWorld: true
               })
               .addTo(this.context.map))

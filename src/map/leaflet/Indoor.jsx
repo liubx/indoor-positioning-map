@@ -34,7 +34,7 @@ class LlIndoorLayer extends Component {
         filter((map) => map !== null && map !== undefined),
         tap((map) => {
           L.tileLayer
-            .wms(`${BASE_MAP_URL}/${map.polygonLayerId.split(':')[0]}/wms`, {
+            .wms(`${BASE_MAP_URL}/wms`, {
               layers: map.polygonLayerId,
               tiled: true,
               format: 'image/png',

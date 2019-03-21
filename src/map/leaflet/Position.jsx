@@ -27,12 +27,7 @@ class LlPositionLayer extends Component {
       .pipe(
         tap(() => this.layer.clearLayers()),
         filter((position) => position !== null && position !== undefined),
-        map((position) =>
-          createPositionLabel({
-            longitude: position.longitude,
-            latitude: position.latitude
-          })
-        ),
+        map((position) => createPositionLabel(position)),
         tap((position) => position.addTo(this.layer))
       )
       .subscribe();
