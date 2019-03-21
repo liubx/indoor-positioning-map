@@ -1,4 +1,3 @@
-/* global window */
 /* eslint no-undef: "error" */
 import { Component } from 'react';
 import { of } from 'rxjs';

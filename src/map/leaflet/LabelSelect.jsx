@@ -91,7 +91,7 @@ class LlLabelSelectLayer extends Component {
   };
 
   showNodePopup = (data) =>
-    `<div class='popup' style='margin-left:50px;background:url(${popup}) no-repeat'><span style='display:block;'><strong>蓝牙节点信息</strong></span><span style='display:block;'>地址:${
+    `<div class='popup' style='margin-left:50px;margin-bottom:-10px;background:url(${popup}) no-repeat'><span style='display:block;'><strong>蓝牙节点信息</strong></span><span style='display:block;'>地址:${
       data.mac_address ? data.mac_address : ''
     }</span><span style='display:block;'>经度:${data.longitude.toFixed(
       5
@@ -100,14 +100,14 @@ class LlLabelSelectLayer extends Component {
     )}</span></div>`;
 
   showTargetPopup = (data) =>
-    `<div class='popup' style='margin-left:50px;background:url(${popup}) no-repeat'><span style='display:block;'><strong>目标信息</strong></span><span style='display:block;'>经度:${data.longitude.toFixed(
+    `<div class='popup' style='margin-left:50px;margin-bottom:-10px;background:url(${popup}) no-repeat'><span style='display:block;'><strong>目标信息</strong></span><span style='display:block;'>经度:${data.longitude.toFixed(
       5
     )}</span><span style='display:block;'>纬度:${data.latitude.toFixed(
       5
     )}</span></div>`;
 
   showLampPopup = (data) =>
-    `<div class='popup' style='margin-left:50px;background:url(${popup}) no-repeat'><span style='display:block;'><strong>定位灯信息</strong></span><span style='display:block;'>经度:${data.longitude.toFixed(
+    `<div class='popup' style='margin-left:50px;margin-bottom:-10px;background:url(${popup}) no-repeat'><span style='display:block;'><strong>定位灯信息</strong></span><span style='display:block;'>经度:${data.longitude.toFixed(
       5
     )}</span><span style='display:block;'>纬度:${data.latitude.toFixed(
       5
@@ -121,7 +121,7 @@ class LlLabelSelectLayer extends Component {
             data.id
           })}>查看详情</span>`
         : '';
-    return `<div class='popup' style='margin-left:50px;background:url(${popup}) no-repeat'><span style='display:block;'><strong>老人信息</strong>${status}</span><span style='display:block;'>电话: xxxxxxx</span><br/><span style='display:block;'>位置: xxxxxxx</span><span style='display:block;'>其他: xxxxxxx</span>${btn}</div>`;
+    return `<div class='popup' style='margin-left:50px;margin-bottom:-10px;background:url(${popup}) no-repeat'><span style='display:block;'><strong>老人信息</strong>${status}</span><span style='display:block;'>电话: xxxxxxx</span><br/><span style='display:block;'>位置: xxxxxxx</span><span style='display:block;'>其他: xxxxxxx</span>${btn}</div>`;
   };
 
   showNursePopup = (data) => {
@@ -131,7 +131,7 @@ class LlLabelSelectLayer extends Component {
             data.id
           })}>查看详情</span>`
         : '';
-    return `<div class='popup' style='margin-left:50px;background:url(${popup}) no-repeat'><span style='display:block;'><strong>护士信息</strong>${status}<span style='display:block;'>电话: xxxxxxx</span><br/><span style='display:block;'>位置: xxxxxxx</span><span style='display:block;'>其他: xxxxxxx</span>${btn}</div>`;
+    return `<div class='popup' style='margin-left:50px;margin-bottom:-10px;background:url(${popup}) no-repeat'><span style='display:block;'><strong>护士信息</strong>${status}<span style='display:block;'>电话: xxxxxxx</span><br/><span style='display:block;'>位置: xxxxxxx</span><span style='display:block;'>其他: xxxxxxx</span>${btn}</div>`;
   };
 
   /**
@@ -146,7 +146,7 @@ class LlLabelSelectLayer extends Component {
           })}>查看详情</span>`
         : '';
     const status = this.getPopupStatus(data.updateTime);
-    return `<div class='popup' style='margin-left:50px;background:url(${popup}) no-repeat'><div><img src="${userAvatar}"/><span class='title'><strong>${
+    return `<div class='popup' style='margin-left:50px;margin-bottom:-10px;background:url(${popup}) no-repeat'><div><img src="${userAvatar}"/><span class='title'><strong>${
       data.name ? data.name : ''
     }</strong>${status}</span></div><div class='subtitle'>${
       data.company && data.company.name ? data.company.name : ''

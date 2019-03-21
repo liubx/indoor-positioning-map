@@ -3,10 +3,14 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 import L from 'leaflet';
+import { from } from 'rxjs';
+import { ajax } from 'rxjs/ajax';
+import { tap, filter, map, flatMap, toArray } from 'rxjs/operators';
 import * as WMS from 'leaflet.wms';
 import { BASE_MAP_URL, TIANDITU_URL } from '../constant';
 import { OUTDOOR_MAX_ZOOM, OUTDOOR_MIN_ZOOM } from './config';
 import { unproject } from './util';
+import popup from '../assets/img/popup.png';
 
 class LlOutdoorLayer extends Component {
   componentDidMount() {
@@ -16,11 +20,11 @@ class LlOutdoorLayer extends Component {
     this.initPopup();
 
     window.hideOutdoorPopup = () => {
-      this.popupLayer.setPosition(null);
+      this.popupLayer.remove();
     };
 
     window.showIndoorMap = () => {
-      this.popupLayer.setPosition(null);
+      this.popupLayer.remove();
       window.loadIndoor(this.data.sort((a, b) => a.floor - b.floor));
     };
   }
@@ -71,18 +75,78 @@ class LlOutdoorLayer extends Component {
   };
 
   loadIndoorMaps = () => {
-    WMS.default.Source.extend({
+    const Source = WMS.default.Source.extend({
       ajax: function(url, callback) {
-        console.log(111);
+        ajax(`${url}&INFO_FORMAT=application/json&FEATURE_COUNT=10`)
+          .pipe(
+            map((e) => e.response),
+            filter((data) => data),
+            map((data) => data.features),
+            filter((features) => features.length),
+            filter((features) => {
+              if (
+                features.every(
+                  (item) =>
+                    features[0].properties.building === item.properties.building
+                )
+              ) {
+                return true;
+              } else {
+                window.zoomIn(2);
+                window.move(
+                  features[0].properties.longitude,
+                  features[0].properties.latitude
+                );
+                return false;
+              }
+            }),
+            flatMap((features) =>
+              from(features).pipe(
+                map((feature) => {
+                  return {
+                    id: feature.id,
+                    floor: feature.properties.floor,
+                    latitude: feature.properties.latitude,
+                    longitude: feature.properties.longitude,
+                    polygonLayerId: feature.properties.polygon_layer,
+                    poiLayerId: feature.properties.poi_layer,
+                    routeLayerId: feature.properties.route_layer,
+                    xmin: feature.properties.map_xmin,
+                    ymin: feature.properties.map_ymin,
+                    xmax: feature.properties.map_xmax,
+                    ymax: feature.properties.map_ymax
+                  };
+                }),
+                toArray(),
+                tap((features) =>
+                  callback.call(this, features)
+                )
+              )
+            )
+          )
+          .subscribe();
       },
-      showFeatureInfo: function(latlng, info) {
-        console.log(222);
-      },
-      getFeatureInfoParams: function(latlng, info) {
-        console.log(333);
+      showWaiting: () => {},
+      // hideWaiting: () => {},
+      showFeatureInfo: (latlng, result) => {
+        this.data = result;
+        this.popupLayer = L.popup({
+          closeButton: false,
+          autoClose: true,
+          closeOnClick: true
+        })
+          .setLatLng(latlng)
+          .setContent(
+            `<div class='popup' style='margin-left:50px;margin-bottom:-10px;background:url(${popup}) no-repeat'><span style='display:block;'><strong>室内地图提示</strong></span><span style='display:block;margin-top: 20px;'>
+          是否进入该室内地图
+          </span>
+          <div style="margin-top:20px;float: right;"><span style='color: #0060B6;cursor:pointer;' onclick="window.hideOutdoorPopup()">取消</span><span style='margin-left:20px;margin-right:50px;color: #0060B6;cursor:pointer;'  onclick="window.showIndoorMap()">确定</span></div></div>`
+          )
+          .openOn(this.context.map);
       }
     });
-    const source = WMS.default.source(`${BASE_MAP_URL}/indoor_map/wms`, {
+
+    const source = new Source(`${BASE_MAP_URL}/indoor_map/wms`, {
       layers: 'indoor_map:indoor_map',
       tiled: true,
       format: 'image/png',

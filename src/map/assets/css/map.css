@@ -3,6 +3,9 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+.leaflet-container {
+  background: #ffffff;
+}
 
 .leaflet-popup-content-wrapper {
   background: none;

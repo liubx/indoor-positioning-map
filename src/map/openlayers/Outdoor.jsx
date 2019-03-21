@@ -160,7 +160,7 @@ class OlOutdoorLayer extends Component {
 
   showPopup = (data) => {
     this.data = data;
-    this.ref.innerHTML = `<div class='ol-popup' style='background:url(${popup}) no-repeat'><span style='display:block;'><strong>室内地图提示</strong></span><span style='display:block;margin-top: 20px;'>
+    this.ref.innerHTML = `<div class='popup' style='background:url(${popup}) no-repeat'><span style='display:block;'><strong>室内地图提示</strong></span><span style='display:block;margin-top: 20px;'>
     是否进入该室内地图
     </span>
     <div style="margin-top: 20px;float: right;"><span style='color: #0060B6;cursor:pointer;' onclick="window.hideOutdoorPopup()">取消</span><span style='margin-left:20px;margin-right:50px;color: #0060B6;cursor:pointer;'  onclick="window.showIndoorMap()">确定</span></div></div>`;

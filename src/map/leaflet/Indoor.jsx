@@ -1,4 +1,3 @@
-/* global window */
 /* eslint no-undef: "error" */
 import { Component } from 'react';
 import { of } from 'rxjs';
@@ -7,9 +6,7 @@ import PropTypes from 'prop-types';
 import L from 'leaflet';
 import { unproject } from './util';
 import { BASE_MAP_URL } from '../constant';
-import {
-  INDOOR_MAX_ZOOM
-} from './config';
+import { INDOOR_MAX_ZOOM } from './config';
 
 class LlIndoorLayer extends Component {
   componentDidMount() {
@@ -18,6 +15,7 @@ class LlIndoorLayer extends Component {
 
   shouldComponentUpdate(newProps) {
     return (
+      newProps.map === null ||
       ((this.props.map === null || this.props.map === undefined) &&
         newProps.map !== null) ||
       (newProps.map !== null && newProps.map !== this.props.map)
@@ -31,14 +29,20 @@ class LlIndoorLayer extends Component {
   loadMap(map) {
     of(map)
       .pipe(
+        tap(() => {
+          if (this.layer) {
+            this.layer.remove();
+          }
+        }),
         filter((map) => map !== null && map !== undefined),
         tap((map) => {
-          L.tileLayer
+          this.layer = L.tileLayer
             .wms(`${BASE_MAP_URL}/wms`, {
               layers: map.polygonLayerId,
               tiled: true,
               format: 'image/png',
               maxZoom: INDOOR_MAX_ZOOM,
+              transparent: true,
               continuousWorld: true
             })
             .addTo(this.context.map);
