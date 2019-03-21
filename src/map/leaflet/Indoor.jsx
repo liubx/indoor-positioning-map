@@ -7,6 +7,9 @@ import PropTypes from 'prop-types';
 import L from 'leaflet';
 import { unproject } from './util';
 import { BASE_MAP_URL } from '../constant';
+import {
+  INDOOR_MAX_ZOOM
+} from './config';
 
 class LlIndoorLayer extends Component {
   componentDidMount() {
@@ -35,19 +38,16 @@ class LlIndoorLayer extends Component {
               layers: map.polygonLayerId,
               tiled: true,
               format: 'image/png',
-              transparent: true,
-              maxZoom: 24,
+              maxZoom: INDOOR_MAX_ZOOM,
               continuousWorld: true
             })
             .addTo(this.context.map);
-          this.context.map.setView(
-            map.latitude !== null && map.longitude !== null
-              ? unproject(map.longitude, map.latitude)
-              : unproject(12957000, 4852000),
-            20
-          );
-          this.context.map.options.minZoom = 18;
-          this.context.map.options.maxZoom = 24;
+
+          if (map.latitude !== null && map.longitude !== null) {
+            this.context.map.panTo(unproject(map.longitude, map.latitude), {
+              duration: 0.8
+            });
+          }
           if (map.xmin && map.ymin && map.xmax && map.ymax) {
             this.context.map.setMaxBounds([
               unproject(map.xmin - 100, map.ymin - 100),

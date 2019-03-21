@@ -17,6 +17,8 @@ class LlEventLayer extends Component {
             coord3857: [point.x, point.y],
             coord4326: [latlng.lng, latlng.lat],
             zoom: this.context.map.getZoom(),
+            maxZoom: this.context.map.getMaxZoom(),
+            minZoom: this.context.map.getMinZoom(),
             extent: this.context.map.getBounds()
           });
         })

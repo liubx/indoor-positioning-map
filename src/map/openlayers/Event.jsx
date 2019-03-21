@@ -18,6 +18,8 @@ class OlEventLayer extends Component {
             coord3857: coordinate,
             coord4326: transform(coordinate, PROJECTION_3857, PROJECTION_4326),
             zoom: this.context.map.getView().getZoom(),
+            maxZoom: this.context.map.getView().getMaxZoom(),
+            minZoom: this.context.map.getView().getMinZoom(),
             resolution: this.context.map.getView().getResolution(),
             extent: this.context.map
               .getView()
