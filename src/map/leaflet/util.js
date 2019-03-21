@@ -20,6 +20,7 @@ import nurse from '../assets/img/nurse.png';
 import senior from '../assets/img/senior.png';
 import supporter from '../assets/img/supporter.png';
 import user from '../assets/img/user.png';
+import 'leaflet-rotatedmarker';
 
 export const unproject = (longitude, latitude) =>
   L.CRS.EPSG3857.unproject(new L.Point(longitude, latitude));
@@ -40,7 +41,6 @@ export const createPositionLabel = (data) => {
   }
   if (data.projection && data.projection === PROJECTION_4326) {
     const point = project(data.longitude, data.latitude);
-    console.log(111);
     data.longitude = point.x;
     data.latitude = point.y;
     data.projection = PROJECTION_3857;
@@ -52,8 +52,7 @@ export const createPositionLabel = (data) => {
       iconSize: [73 * 0.4, 72 * 0.4],
       iconAnchor: [73 * 0.5 * 0.4, 72 * 0.5 * 0.4]
     }),
-    rotationAngle:
-      data.direction === undefined ? 0 : (data.direction * Math.PI) / 180
+    rotationAngle: data.direction === undefined ? 0 : data.direction
   });
   marker.data = data;
   return marker;
