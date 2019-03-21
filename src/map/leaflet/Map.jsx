@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import L from 'leaflet';
 import PropTypes from 'prop-types';
 import { unproject } from './util';
-import { TIANDITU_URL } from '../constant';
 import {
   DEFAULT_CENTER,
   DEFAULT_PROJECTION,
@@ -37,42 +36,6 @@ class LlMapLayer extends Component {
       minZoom,
       crs: DEFAULT_PROJECTION
     });
-    L.tileLayer(
-      `${TIANDITU_URL.replace(
-        '{0-7}',
-        '{s}'
-      )}/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=111b0cbae5ef2fb8ebdf06f937b12dd8`,
-      {
-        subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
-        maxZoom: maxZoom,
-        minZoom: minZoom,
-        detectRetina: true
-      }
-    ).addTo(this.map);
-    L.tileLayer(
-      `http://39.105.217.228:9002/api/wmts/gettile/4b9006155b9946d5bf259dd750084f52/{z}/{x}/{y}`,
-      {
-        maxZoom: maxZoom,
-        minZoom: minZoom,
-        detectRetina: true,
-        bounds: [
-          unproject(13574731.18887278, 3469919.836022329),
-          unproject(13585338.647663247 + 100, 3478566.0198801826)
-        ]
-      }
-    ).addTo(this.map);
-    L.tileLayer(
-      `${TIANDITU_URL.replace(
-        '{0-7}',
-        '{s}'
-      )}/DataServer?T=cia_w&x={x}&y={y}&l={z}&tk=111b0cbae5ef2fb8ebdf06f937b12dd8`,
-      {
-        subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
-        maxZoom: maxZoom,
-        minZoom: minZoom,
-        detectRetina: true
-      }
-    ).addTo(this.map);
     this.setState({
       loaded: true
     });
