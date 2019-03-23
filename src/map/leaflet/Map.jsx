@@ -1,9 +1,16 @@
 /* global window */
 /* eslint no-undef: "error" */
 import React, { Component } from 'react';
-import * as L from 'leaflet';
+import L from 'leaflet';
 import PropTypes from 'prop-types';
 import { unproject } from './util';
+import {
+  DEFAULT_CENTER,
+  DEFAULT_PROJECTION,
+  OUTDOOR_DEFAULT_ZOOM,
+  OUTDOOR_MAX_ZOOM,
+  OUTDOOR_MIN_ZOOM
+} from './config';
 
 class LlMapLayer extends Component {
   constructor(props) {
@@ -19,20 +26,16 @@ class LlMapLayer extends Component {
   }
 
   componentDidMount() {
+    const { zoom, minZoom, maxZoom } = this.props;
     this.map = L.map(this.ref, {
       attributionControl: false,
       zoomControl: false,
-      center: unproject(12957000, 4852000),
-      zoom: 18,
-      crs: L.CRS.EPSG3857
+      center: unproject(DEFAULT_CENTER[0], DEFAULT_CENTER[1]),
+      zoom,
+      maxZoom,
+      minZoom,
+      crs: DEFAULT_PROJECTION
     });
-    L.tileLayer(
-      'http://t{s}.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
-      {
-        subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
-        maxZoom: 24
-      }
-    ).addTo(this.map);
     this.setState({
       loaded: true
     });
@@ -57,11 +60,17 @@ class LlMapLayer extends Component {
 }
 
 LlMapLayer.defaultProps = {
-  children: null
+  children: null,
+  zoom: OUTDOOR_DEFAULT_ZOOM,
+  maxZoom: OUTDOOR_MAX_ZOOM,
+  minZoom: OUTDOOR_MIN_ZOOM
 };
 
 LlMapLayer.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
+  zoom: PropTypes.number,
+  minZoom: PropTypes.number,
+  maxZoom: PropTypes.number
 };
 
 LlMapLayer.childContextTypes = {

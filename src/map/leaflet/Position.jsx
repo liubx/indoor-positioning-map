@@ -1,12 +1,14 @@
 import { Component } from 'react';
-import Rx from 'rxjs/Rx';
 import PropTypes from 'prop-types';
-import * as L from 'leaflet';
+import L from 'leaflet';
+import { of } from 'rxjs';
+import { tap, filter, map } from 'rxjs/operators';
 import { createPositionLabel } from './util';
 
 class LlPositionLayer extends Component {
   componentDidMount() {
     this.layer = L.featureGroup().addTo(this.context.map);
+    this.layer.setZIndex(1);
     this.loadPosition(this.props.position);
   }
 
@@ -22,16 +24,13 @@ class LlPositionLayer extends Component {
   }
 
   loadPosition(position) {
-    Rx.Observable.of(position)
-      .do(() => this.layer.clearLayers())
-      .filter((position) => position !== null && position !== undefined)
-      .map((position) =>
-        createPositionLabel({
-          longitude: position.longitude,
-          latitude: position.latitude
-        })
+    of(position)
+      .pipe(
+        tap(() => this.layer.clearLayers()),
+        filter((position) => position !== null && position !== undefined),
+        map((position) => createPositionLabel(position)),
+        tap((position) => position.addTo(this.layer))
       )
-      .do((position) => position.addTo(this.layer))
       .subscribe();
   }
 

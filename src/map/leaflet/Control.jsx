@@ -2,10 +2,21 @@
 /* eslint no-undef: "error" */
 import { Component } from 'react';
 import PropTypes from 'prop-types';
-import { unproject } from './util';
+import { project, unproject } from './util';
+import {
+  OUTDOOR_MAX_ZOOM,
+  OUTDOOR_MIN_ZOOM,
+  OUTDOOR_DEFAULT_ZOOM,
+  INDOOR_MAX_ZOOM,
+  INDOOR_MIN_ZOOM,
+  INDOOR_DEFAULT_ZOOM
+} from './config';
+import { PROJECTION_3857, PROJECTION_4326 } from '../constant';
 
 class LlControlLayer extends Component {
   componentDidMount() {
+    window.rotate = () => {};
+
     window.center = () => {
       if (
         this.props.position &&
@@ -39,6 +50,22 @@ class LlControlLayer extends Component {
       }
     };
 
+    window.setIndoor = () => {
+      this.context.map.setMinZoom(INDOOR_MIN_ZOOM);
+      this.context.map.setMaxZoom(INDOOR_MAX_ZOOM);
+      this.context.map.setZoom(INDOOR_DEFAULT_ZOOM);
+    };
+
+    window.setOutdoor = () => {
+      this.context.map.setMinZoom(OUTDOOR_MIN_ZOOM);
+      this.context.map.setMaxZoom(OUTDOOR_MAX_ZOOM);
+      this.context.map.setZoom(OUTDOOR_DEFAULT_ZOOM);
+    };
+
+    window.zoom = (zoom) => {
+      this.context.map.setZoom(zoom);
+    };
+
     window.zoomIn = () => {
       this.context.map.zoomIn(1);
     };
@@ -47,7 +74,13 @@ class LlControlLayer extends Component {
       this.context.map.zoomOut(1);
     };
 
-    window.move = (longitude, latitude) => {
+    window.move = (longitude, latitude, projection = PROJECTION_3857) => {
+      if (projection === PROJECTION_4326) {
+        const point = project(longitude, latitude);
+        longitude = point.x;
+        latitude = point.y;
+        projection = PROJECTION_3857;
+      }
       this.context.map.panTo(unproject(longitude, latitude), {
         duration: 0.8
       });

@@ -1,11 +1,13 @@
 import { Component } from 'react';
-import Rx from 'rxjs/Rx';
+import { of } from 'rxjs';
+import { tap, filter, flatMap, map } from 'rxjs/operators';
 import PropTypes from 'prop-types';
-import * as L from 'leaflet';
+import L from 'leaflet';
 
 class LlLabelLayer extends Component {
   componentDidMount() {
     this.layer = L.featureGroup().addTo(this.context.map);
+    this.layer.setZIndex(1);
     this.loadData(this.props.data);
   }
 
@@ -27,13 +29,15 @@ class LlLabelLayer extends Component {
   }
 
   loadData(data) {
-    Rx.Observable.of(data)
-      .do(() => this.layer.clearLayers())
-      .filter((data) => data !== null && data !== undefined)
-      .flatMap((data) => data)
-      .map((data) => this.props.createLabel(data))
-      .filter((data) => data !== null)
-      .do((feature) => feature.addTo(this.layer))
+    of(data)
+      .pipe(
+        tap(() => this.layer.clearLayers()),
+        filter((data) => data !== null && data !== undefined),
+        flatMap((data) => data),
+        map((data) => this.props.createLabel(data)),
+        filter((data) => data !== null),
+        tap((feature) => feature.addTo(this.layer))
+      )
       .subscribe();
   }
 

@@ -1,11 +1,12 @@
-/* global window */
 /* eslint no-undef: "error" */
 import { Component } from 'react';
-import Rx from 'rxjs/Rx';
+import { of } from 'rxjs';
+import { tap, filter } from 'rxjs/operators';
 import PropTypes from 'prop-types';
-import * as L from 'leaflet';
+import L from 'leaflet';
 import { unproject } from './util';
 import { BASE_MAP_URL } from '../constant';
+import { INDOOR_MAX_ZOOM } from './config';
 
 class LlIndoorLayer extends Component {
   componentDidMount() {
@@ -14,6 +15,7 @@ class LlIndoorLayer extends Component {
 
   shouldComponentUpdate(newProps) {
     return (
+      newProps.map === null ||
       ((this.props.map === null || this.props.map === undefined) &&
         newProps.map !== null) ||
       (newProps.map !== null && newProps.map !== this.props.map)
@@ -25,37 +27,39 @@ class LlIndoorLayer extends Component {
   }
 
   loadMap(map) {
-    Rx.Observable.of(map)
-      .filter((map) => map !== null && map !== undefined)
-      .do((map) => {
-        L.tileLayer
-          .wms(
-            `${BASE_MAP_URL}/${map.polygonLayerId.split(':')[0]}/wms`,
-            {
+    of(map)
+      .pipe(
+        tap(() => {
+          if (this.layer) {
+            this.layer.remove();
+          }
+        }),
+        filter((map) => map !== null && map !== undefined),
+        tap((map) => {
+          this.layer = L.tileLayer
+            .wms(`${BASE_MAP_URL}/wms`, {
               layers: map.polygonLayerId,
               tiled: true,
               format: 'image/png',
+              maxZoom: INDOOR_MAX_ZOOM,
               transparent: true,
-              maxZoom: 24,
               continuousWorld: true
-            }
-          )
-          .addTo(this.context.map);
-        this.context.map.setView(
-          map.latitude !== null && map.longitude !== null
-            ? unproject(map.longitude, map.latitude)
-            : unproject(12957000, 4852000),
-          20
-        );
-        this.context.map.options.minZoom = 18;
-        this.context.map.options.maxZoom = 24;
-        if (map.xmin && map.ymin && map.xmax && map.ymax) {
-          this.context.map.setMaxBounds([
-            unproject(map.xmin - 100, map.ymin - 100),
-            unproject(map.xmax + 100, map.ymax + 100)
-          ]);
-        }
-      })
+            })
+            .addTo(this.context.map);
+
+          if (map.latitude !== null && map.longitude !== null) {
+            this.context.map.panTo(unproject(map.longitude, map.latitude), {
+              duration: 0.8
+            });
+          }
+          if (map.xmin && map.ymin && map.xmax && map.ymax) {
+            this.context.map.setMaxBounds([
+              unproject(map.xmin - 100, map.ymin - 100),
+              unproject(map.xmax + 100, map.ymax + 100)
+            ]);
+          }
+        })
+      )
       .subscribe();
   }
 

@@ -1,4 +1,4 @@
-import * as L from 'leaflet';
+import L from 'leaflet';
 import {
   LAMP_LAYER,
   NODE_LAYER,
@@ -7,7 +7,9 @@ import {
   SENIOR_LAYER,
   SUPPORTER_LAYER,
   TARGET_LAYER,
-  USER_LAYER
+  USER_LAYER,
+  PROJECTION_3857,
+  PROJECTION_4326
 } from '../constant';
 
 import position from '../assets/img/position.png';
@@ -18,6 +20,7 @@ import nurse from '../assets/img/nurse.png';
 import senior from '../assets/img/senior.png';
 import supporter from '../assets/img/supporter.png';
 import user from '../assets/img/user.png';
+import 'leaflet-rotatedmarker';
 
 export const unproject = (longitude, latitude) =>
   L.CRS.EPSG3857.unproject(new L.Point(longitude, latitude));
@@ -36,7 +39,12 @@ export const createPositionLabel = (data) => {
   ) {
     return null;
   }
-
+  if (data.projection && data.projection === PROJECTION_4326) {
+    const point = project(data.longitude, data.latitude);
+    data.longitude = point.x;
+    data.latitude = point.y;
+    data.projection = PROJECTION_3857;
+  }
   data.type = POSITION_LAYER;
   const marker = L.marker(unproject(data.longitude, data.latitude), {
     icon: L.icon({
@@ -44,8 +52,7 @@ export const createPositionLabel = (data) => {
       iconSize: [73 * 0.4, 72 * 0.4],
       iconAnchor: [73 * 0.5 * 0.4, 72 * 0.5 * 0.4]
     }),
-    rotationAngle:
-      data.direction === undefined ? 0 : (data.direction * Math.PI) / 180
+    rotationAngle: data.direction === undefined ? 0 : data.direction
   });
   marker.data = data;
   return marker;
@@ -61,6 +68,12 @@ export const createLampLabel = (data) => {
     data.longitude === undefined
   ) {
     return null;
+  }
+  if (data.projection && data.projection === PROJECTION_4326) {
+    const point = project(data.longitude, data.latitude);
+    data.longitude = point.x;
+    data.latitude = point.y;
+    data.projection = PROJECTION_3857;
   }
   data.type = LAMP_LAYER;
   const marker = L.marker(unproject(data.longitude, data.latitude), {
@@ -84,6 +97,12 @@ export const createNodeLabel = (data) => {
     data.longitude === undefined
   ) {
     return null;
+  }
+  if (data.projection && data.projection === PROJECTION_4326) {
+    const point = project(data.longitude, data.latitude);
+    data.longitude = point.x;
+    data.latitude = point.y;
+    data.projection = PROJECTION_3857;
   }
   data.type = NODE_LAYER;
   const marker = L.marker(unproject(data.longitude, data.latitude), {
@@ -110,6 +129,12 @@ export const createNurseLabel = (data) => {
   ) {
     return null;
   }
+  if (data.tag.projection && data.tag.projection === PROJECTION_4326) {
+    const point = project(data.tag.longitude, data.tag.latitude);
+    data.tag.longitude = point.x;
+    data.tag.latitude = point.y;
+    data.tag.projection = PROJECTION_3857;
+  }
   data.type = NURSE_LAYER;
   const marker = L.marker(unproject(data.tag.longitude, data.tag.latitude), {
     icon: L.icon({
@@ -135,6 +160,12 @@ export const createSeniorLabel = (data) => {
   ) {
     return null;
   }
+  if (data.tag.projection && data.tag.projection === PROJECTION_4326) {
+    const point = project(data.tag.longitude, data.tag.latitude);
+    data.tag.longitude = point.x;
+    data.tag.latitude = point.y;
+    data.tag.projection = PROJECTION_3857;
+  }
   data.type = SENIOR_LAYER;
   const marker = L.marker(unproject(data.tag.longitude, data.tag.latitude), {
     icon: L.icon({
@@ -157,6 +188,12 @@ export const createTargetLabel = (data) => {
     data.longitude === undefined
   ) {
     return null;
+  }
+  if (data.projection && data.projection === PROJECTION_4326) {
+    const point = project(data.longitude, data.latitude);
+    data.longitude = point.x;
+    data.latitude = point.y;
+    data.projection = PROJECTION_3857;
   }
   data.type = TARGET_LAYER;
   const marker = L.marker(unproject(data.longitude, data.latitude), {
@@ -181,6 +218,12 @@ export const createSupporterLabel = (data) => {
   ) {
     return null;
   }
+  if (data.projection && data.projection === PROJECTION_4326) {
+    const point = project(data.longitude, data.latitude);
+    data.longitude = point.x;
+    data.latitude = point.y;
+    data.projection = PROJECTION_3857;
+  }
   data.type = SUPPORTER_LAYER;
   const marker = L.marker(unproject(data.longitude, data.latitude), {
     icon: L.icon({
@@ -203,6 +246,12 @@ export const createUserLabel = (data) => {
     data.longitude === undefined
   ) {
     return null;
+  }
+  if (data.projection && data.projection === PROJECTION_4326) {
+    const point = project(data.longitude, data.latitude);
+    data.longitude = point.x;
+    data.latitude = point.y;
+    data.projection = PROJECTION_3857;
   }
   data.type = USER_LAYER;
   const marker = L.marker(unproject(data.longitude, data.latitude), {

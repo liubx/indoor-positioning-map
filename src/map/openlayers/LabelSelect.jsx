@@ -18,7 +18,6 @@ import {
 import supporterAvatar from '../assets/img/supporter_avatar.png';
 import userAvatar from '../assets/img/user_avatar.png';
 import popup from '../assets/img/popup.png';
-import popupShadow from '../assets/img/popup_shadow.png';
 
 class OlLabelSelectLayer extends Component {
   constructor(props) {
@@ -203,8 +202,8 @@ class OlLabelSelectLayer extends Component {
   };
 
   showNodePopup = (data) => {
-    this.ref.innerHTML = `<div class='ol-popup' style='background:url(${popup}) no-repeat'><span style='display:block;'><strong>蓝牙节点信息</strong></span><span style='display:block;'>地址:${
-      data.mac_address
+    this.ref.innerHTML = `<div class='popup' style='background:url(${popup}) no-repeat'><span style='display:block;'><strong>蓝牙节点信息</strong></span><span style='display:block;'>地址:${
+      data.mac_address ? data.mac_address : ''
     }</span><span style='display:block;'>经度:${data.longitude.toFixed(
       5
     )}</span><span style='display:block;'>纬度:${data.latitude.toFixed(
@@ -214,8 +213,7 @@ class OlLabelSelectLayer extends Component {
   };
 
   showTargetPopup = (data) => {
-    const status = this.getPopupStatus(data.updateTime);
-    this.ref.innerHTML = `<div class='ol-popup' style='background:url(${popup}) no-repeat'><span style='display:block;'><strong>目标信息</strong>${status}</span><span style='display:block;'>经度:${data.longitude.toFixed(
+    this.ref.innerHTML = `<div class='popup' style='background:url(${popup}) no-repeat'><span style='display:block;'><strong>目标信息</strong></span><span style='display:block;'>经度:${data.longitude.toFixed(
       5
     )}</span><span style='display:block;'>纬度:${data.latitude.toFixed(
       5
@@ -224,7 +222,7 @@ class OlLabelSelectLayer extends Component {
   };
 
   showLampPopup = (data) => {
-    this.ref.innerHTML = `<div class='ol-popup' style='background:url(${popup}) no-repeat'><span style='display:block;'><strong>定位灯信息</strong></span><span style='display:block;'>经度:${data.longitude.toFixed(
+    this.ref.innerHTML = `<div class='popup' style='background:url(${popup}) no-repeat'><span style='display:block;'><strong>定位灯信息</strong></span><span style='display:block;'>经度:${data.longitude.toFixed(
       5
     )}</span><span style='display:block;'>纬度:${data.latitude.toFixed(
       5
@@ -240,8 +238,7 @@ class OlLabelSelectLayer extends Component {
             data.id
           })}>查看详情</span>`
         : '';
-    const status = this.getPopupStatus(data.updateTime);
-    this.ref.innerHTML = `<div class='ol-popup' style='background:url(${popup}) no-repeat'><span style='display:block;'><strong>老人信息</strong>${status}</span><span style='display:block;'>电话: xxxxxxx</span><br/><span style='display:block;'>位置: xxxxxxx</span><span style='display:block;'>其他: xxxxxxx</span>${btn}</div>`;
+    this.ref.innerHTML = `<div class='popup' style='background:url(${popup}) no-repeat'><span style='display:block;'><strong>老人信息</strong></span><span style='display:block;'>电话: xxxxxxx</span><br/><span style='display:block;'>位置: xxxxxxx</span><span style='display:block;'>其他: xxxxxxx</span>${btn}</div>`;
     this.layer.setPosition([data.tag.longitude, data.tag.latitude]);
   };
 
@@ -252,8 +249,7 @@ class OlLabelSelectLayer extends Component {
             data.id
           })}>查看详情</span>`
         : '';
-    const status = this.getPopupStatus(data.updateTime);
-    this.ref.innerHTML = `<div class='ol-popup' style='background:url(${popup}) no-repeat'><span style='display:block;'><strong>护士信息</strong>${status}<span style='display:block;'>电话: xxxxxxx</span><br/><span style='display:block;'>位置: xxxxxxx</span><span style='display:block;'>其他: xxxxxxx</span>${btn}</div>`;
+    this.ref.innerHTML = `<div class='popup' style='background:url(${popup}) no-repeat'><span style='display:block;'><strong>护士信息</strong><span style='display:block;'>电话: xxxxxxx</span><br/><span style='display:block;'>位置: xxxxxxx</span><span style='display:block;'>其他: xxxxxxx</span>${btn}</div>`;
     this.layer.setPosition([data.tag.longitude, data.tag.latitude]);
   };
 
@@ -269,7 +265,7 @@ class OlLabelSelectLayer extends Component {
           })}>查看详情</span>`
         : '';
     const status = this.getPopupStatus(data.updateTime);
-    this.ref.innerHTML = `<div class='ol-popup-shadow' style='background:url(${popupShadow}) no-repeat'><div><img src="${userAvatar}"/><span class='title'><strong>${
+    this.ref.innerHTML = `<div class='popup' style='background:url(${popup}) no-repeat'><div><img src="${userAvatar}"/><span class='title'><strong>${
       data.name ? data.name : ''
     }</strong>${status}</span></div><div class='subtitle'>${
       data.company && data.company.name ? data.company.name : ''
@@ -285,13 +281,13 @@ class OlLabelSelectLayer extends Component {
    */
   showSupporterPopup = (data) => {
     const btn =
-      typeof android !== 'undefined' && typeof android.showUser !== 'undefined'
-        ? `<span class='detail-btn' onclick={android.showUser(${
+      typeof android !== 'undefined' && typeof android.showSupporter !== 'undefined'
+        ? `<span class='detail-btn' onclick={android.showSupporter(${
             data.id
           })}>查看详情</span>`
         : '';
     const status = this.getPopupStatus(data.updateTime);
-    this.ref.innerHTML = `<div class='ol-popup-shadow' style='background:url(${popupShadow}) no-repeat'><div><img src="${supporterAvatar}"/><span class='title'><strong>${
+    this.ref.innerHTML = `<div class='popup' style='background:url(${popup}) no-repeat'><div><img src="${supporterAvatar}"/><span class='title'><strong>${
       data.name
     }</strong>${status}</span></div><div class='subtitle'>${
       data.company && data.company.name ? data.company.name : ''

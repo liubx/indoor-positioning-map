@@ -1,10 +1,12 @@
 /* global window */
 /* eslint no-undef: "error" */
 import { Component } from 'react';
-import Rx from 'rxjs/Rx';
 import PropTypes from 'prop-types';
-import * as L from 'leaflet';
+import L from 'leaflet';
+import { of } from 'rxjs';
+import { tap, filter } from 'rxjs/operators';
 import { BASE_MAP_URL } from '../constant';
+import { INDOOR_MAX_ZOOM } from './config';
 
 class LlPoiLayer extends Component {
   componentDidMount() {
@@ -31,26 +33,28 @@ class LlPoiLayer extends Component {
   }
 
   loadPoi(map) {
-    Rx.Observable.of(map)
-      .filter(
-        (map) =>
-          map !== null &&
-          map !== undefined &&
-          map.poiLayerId !== null &&
-          map.poiLayerId !== undefined
-      )
-      .do(
-        (map) =>
-          (this.layer = L.tileLayer
-            .wms(`${BASE_MAP_URL}/${map.poiLayerId.split(':')[0]}/wms`, {
-              layers: map.poiLayerId,
-              tiled: true,
-              format: 'image/png',
-              transparent: true,
-              maxZoom: 24,
-              continuousWorld: true
-            })
-            .addTo(this.context.map))
+    of(map)
+      .pipe(
+        filter(
+          (map) =>
+            map !== null &&
+            map !== undefined &&
+            map.poiLayerId !== null &&
+            map.poiLayerId !== undefined
+        ),
+        tap(
+          (map) =>
+            (this.layer = L.tileLayer
+              .wms(`${BASE_MAP_URL}/wms`, {
+                layers: map.poiLayerId,
+                tiled: true,
+                format: 'image/png',
+                transparent: true,
+                maxZoom: INDOOR_MAX_ZOOM,
+                continuousWorld: true
+              })
+              .addTo(this.context.map))
+        )
       )
       .subscribe();
   }

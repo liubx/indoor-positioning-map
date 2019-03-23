@@ -85,7 +85,6 @@ class OlControlLayer extends Component {
         center: center,
         duration: 0
       });
-      console.log(this.context.map.getView().options_);
     };
 
     window.zoom = (zoom) => {

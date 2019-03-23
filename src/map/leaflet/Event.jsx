@@ -1,32 +1,47 @@
 /* global android */
 /* eslint no-undef: "error" */
 import { Component } from 'react';
-import Rx from 'rxjs/Rx';
+import { fromEvent } from 'rxjs';
+import { tap, map } from 'rxjs/operators';
 import PropTypes from 'prop-types';
 import { project } from './util';
 
 class LlEventLayer extends Component {
   componentDidMount() {
-    Rx.Observable.fromEvent(this.context.map, 'click')
-      .map((e) => e.latlng)
-      .map((latlng) => project(latlng.lng, latlng.lat))
-      .map((data) => [data.x, data.y])
-      .do((coordinate) => console.log(coordinate))
+    fromEvent(this.context.map, 'click')
+      .pipe(
+        tap((e) => this.props.onSingleClick(e)),
+        map((e) => e.latlng),
+        tap((latlng) => {
+          const point = project(latlng.lng, latlng.lat);
+          console.log({
+            coord3857: [point.x, point.y],
+            coord4326: [latlng.lng, latlng.lat],
+            zoom: this.context.map.getZoom(),
+            maxZoom: this.context.map.getMaxZoom(),
+            minZoom: this.context.map.getMinZoom(),
+            extent: this.context.map.getBounds()
+          });
+        })
+      )
       .subscribe();
 
-    Rx.Observable.fromEvent(this.context.map, 'dblclick')
-      .map((e) => e.latlng)
-      .map((latlng) => project(latlng.lng, latlng.lat))
-      .map((data) => [data.x, data.y])
-      .do((coordinate) => console.log(coordinate))
-      .do((coordinate) => {
-        if (
-          typeof android !== 'undefined' &&
-          typeof android.showPosition !== 'undefined'
-        ) {
-          android.showPosition(coordinate[0], coordinate[1]);
-        }
-      })
+    fromEvent(this.context.map, 'dblclick')
+      .pipe(
+        tap((e) => this.props.onDoubleClick(e)),
+        map((e) => e.latlng),
+        map((latlng) => project(latlng.lng, latlng.lat)),
+        map((data) => [data.x, data.y]),
+        tap((coordinate) => console.log(coordinate)),
+        tap((coordinate) => {
+          if (
+            typeof android !== 'undefined' &&
+            typeof android.showPosition !== 'undefined'
+          ) {
+            android.showPosition(coordinate[0], coordinate[1]);
+          }
+        })
+      )
       .subscribe();
   }
 
@@ -34,6 +49,16 @@ class LlEventLayer extends Component {
     return false;
   }
 }
+
+LlEventLayer.defaultProps = {
+  onSingleClick: () => false,
+  onDoubleClick: () => false
+};
+
+LlEventLayer.propTypes = {
+  onSingleClick: PropTypes.func,
+  onDoubleClick: PropTypes.func
+};
 
 LlEventLayer.contextTypes = {
   map: PropTypes.object
