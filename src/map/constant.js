@@ -44,7 +44,7 @@ export const TIANDITU_URL = `${
 
 export const BASE_MAP_URL = `${
   window.location.protocol
-}//map.reliablesense.cn/geoserver`;
+}//mapdev.reliablesense.cn/geoserver`;
 
 export const BASE_API_URL = 'http://101.200.36.227:9000/api';
 
