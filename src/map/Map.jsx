@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Openlayers from './openlayers/Openlayers';
 import Leaflet from './leaflet/Leaflet';
-import { LEAFLET, OPENLAYERS } from './constant';
+import { LEAFLET, OPENLAYERS, INDOOR, OUTDOOR } from './constant';
 import './assets/css/map.css';
 import back from './assets/img/back.png';
 
@@ -13,6 +13,7 @@ class Map extends Component {
     super(props);
     this.state = {
       type: this.props.type,
+      env: this.props.env,
       map: this.props.map,
       maps: this.props.maps,
       nodes: this.props.nodes,
@@ -73,6 +74,7 @@ class Map extends Component {
     window.loadIndoor = (data) => {
       window.setIndoor();
       this.setState({
+        env: INDOOR,
         map: data[0],
         maps: data
       });
@@ -81,6 +83,7 @@ class Map extends Component {
     window.loadOutdoor = () => {
       window.setOutdoor();
       this.setState({
+        env: OUTDOOR,
         map: null,
         maps: []
       });
@@ -160,6 +163,7 @@ class Map extends Component {
       <div>
         {this.state.type === OPENLAYERS ? (
           <Openlayers
+            env={this.state.env}
             map={this.state.map}
             lamps={this.state.lamps}
             nodes={this.state.nodes}
@@ -183,6 +187,7 @@ class Map extends Component {
         )}
         {this.state.type === LEAFLET ? (
           <Leaflet
+            env={this.state.env}
             map={this.state.map}
             lamps={this.state.lamps}
             nodes={this.state.nodes}
@@ -204,14 +209,18 @@ class Map extends Component {
         ) : (
           ''
         )}
-        {this.state.maps && this.state.maps.length ? (
+        {this.state.env === INDOOR &&
+        this.state.maps &&
+        this.state.maps.length ? (
           <div className="back">
             <img onClick={() => window.loadOutdoor()} src={back} />
           </div>
         ) : (
           ''
         )}
-        {this.state.maps && this.state.maps.length ? (
+        {this.state.env === INDOOR &&
+        this.state.maps &&
+        this.state.maps.length ? (
           <select
             className="floor-select"
             onChange={(event) =>
@@ -238,6 +247,7 @@ class Map extends Component {
 
 Map.defaultProps = {
   type: OPENLAYERS,
+  env: OUTDOOR,
   map: null,
   maps: [],
   heatmap: null,
@@ -260,6 +270,7 @@ Map.defaultProps = {
 
 Map.propTypes = {
   type: PropTypes.string,
+  env: PropTypes.string,
   map: PropTypes.object,
   maps: PropTypes.array,
   heatmap: PropTypes.object,

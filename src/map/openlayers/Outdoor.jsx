@@ -10,17 +10,22 @@ import { fromEvent, from } from 'rxjs';
 import { ajax } from 'rxjs/ajax';
 import { tap, filter, map, flatMap, toArray } from 'rxjs/operators';
 import { OUTDOOR_MIN_RESOLUTION } from './config';
-import { BASE_MAP_URL, TIANDITU_URL } from '../constant';
+import { BASE_MAP_URL, TIANDITU_URL, OUTDOOR } from '../constant';
 import { get as getProjection } from 'ol/proj.js';
 import popup from '../assets/img/popup.png';
 
 class OlOutdoorLayer extends Component {
   componentDidMount() {
-    this.loadTianDiTu();
-    this.loadCustomMap();
-    this.loadIndoorMaps();
+    this.tianDiTuLayer = this.loadTianDiTu();
+    this.tianDiTuAnnotationLayer = this.loadTianDiTuAnnotation();
+    this.customMapLayer = this.loadCustomMap();
+    this.indoorMapsLayer = this.loadIndoorMaps();
     this.initPopup();
-
+    if (this.props.env === OUTDOOR) {
+      this.showLayers();
+    } else {
+      this.hideLayers();
+    }
     window.hideOutdoorPopup = () => {
       this.popupLayer.setPosition(null);
     };
@@ -31,46 +36,80 @@ class OlOutdoorLayer extends Component {
     };
   }
 
+  shouldComponentUpdate(newProps) {
+    return (
+      this.props.env === null ||
+      this.props.env === undefined ||
+      newProps.env !== this.props.env
+    );
+  }
+
+  componentWillUpdate(newProps) {
+    if (newProps.env === OUTDOOR) {
+      this.showLayers();
+    } else {
+      this.hideLayers();
+    }
+  }
+
+  showLayers = () => {
+    this.tianDiTuLayer.setVisible(true);
+    this.tianDiTuAnnotationLayer.setVisible(true);
+    this.customMapLayer.setVisible(true);
+    this.indoorMapsLayer.setVisible(true);
+  };
+
+  hideLayers = () => {
+    this.tianDiTuLayer.setVisible(false);
+    this.tianDiTuAnnotationLayer.setVisible(false);
+    this.customMapLayer.setVisible(false);
+    this.indoorMapsLayer.setVisible(false);
+  };
+
   loadTianDiTu = () => {
-    this.context.map.addLayer(
-      new TileLayer({
-        source: new XYZ({
-          url: `${TIANDITU_URL}/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=111b0cbae5ef2fb8ebdf06f937b12dd8`,
-          projection: getProjection('EPSG:3857')
-        }),
-        zIndex: -10,
-        minResolution: OUTDOOR_MIN_RESOLUTION
-      })
-    );
-    this.context.map.addLayer(
-      new TileLayer({
-        source: new XYZ({
-          url: `${TIANDITU_URL}/DataServer?T=cia_w&x={x}&y={y}&l={z}&tk=111b0cbae5ef2fb8ebdf06f937b12dd8`,
-          projection: getProjection('EPSG:3857')
-        }),
-        zIndex: -5,
-        minResolution: OUTDOOR_MIN_RESOLUTION
-      })
-    );
+    const layer = new TileLayer({
+      source: new XYZ({
+        url: `${TIANDITU_URL}/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=111b0cbae5ef2fb8ebdf06f937b12dd8`,
+        projection: getProjection('EPSG:3857')
+      }),
+      zIndex: -10,
+      minResolution: OUTDOOR_MIN_RESOLUTION
+    });
+    this.context.map.addLayer(layer);
+    return layer;
+  };
+
+  loadTianDiTuAnnotation = () => {
+    const layer = new TileLayer({
+      source: new XYZ({
+        url: `${TIANDITU_URL}/DataServer?T=cia_w&x={x}&y={y}&l={z}&tk=111b0cbae5ef2fb8ebdf06f937b12dd8`,
+        projection: getProjection('EPSG:3857')
+      }),
+      zIndex: -5,
+      minResolution: OUTDOOR_MIN_RESOLUTION
+    });
+    this.context.map.addLayer(layer);
+    return layer;
   };
 
   loadCustomMap = () => {
-    this.context.map.addLayer(
-      new TileLayer({
-        source: new XYZ({
-          url: `http://39.105.217.228:9002/api/wmts/gettile/4b9006155b9946d5bf259dd750084f52/{z}/{x}/{y}`,
-          projection: getProjection('EPSG:3857')
-        }),
-        extent: [
-          13574731.18887278,
-          3469919.836022329,
-          13585338.647663247,
-          3478566.0198801826
-        ],
-        zIndex: -9,
-        maxResolution: '19'
-      })
-    );
+    const layer = new TileLayer({
+      source: new XYZ({
+        url: `http://39.105.217.228:9002/api/wmts/gettile/4b9006155b9946d5bf259dd750084f52/{z}/{x}/{y}`,
+        projection: getProjection('EPSG:3857')
+      }),
+      extent: [
+        13574731.18887278,
+        3469919.836022329,
+        13585338.647663247,
+        3478566.0198801826
+      ],
+      zIndex: -9,
+      minResolution: OUTDOOR_MIN_RESOLUTION,
+      maxResolution: '19'
+    });
+    this.context.map.addLayer(layer);
+    return layer;
   };
 
   loadIndoorMaps = () => {
@@ -79,13 +118,13 @@ class OlOutdoorLayer extends Component {
       params: { LAYERS: 'indoor_map:indoor_map', TILED: true },
       serverType: 'geoserver'
     });
-    this.context.map.addLayer(
-      new TileLayer({
-        source: this.source,
-        zIndex: -4,
-        minResolution: OUTDOOR_MIN_RESOLUTION
-      })
-    );
+    const layer = new TileLayer({
+      source: this.source,
+      zIndex: -4,
+      minResolution: OUTDOOR_MIN_RESOLUTION
+    });
+    this.context.map.addLayer(layer);
+    return layer;
   };
 
   initPopup = () => {
@@ -172,9 +211,13 @@ class OlOutdoorLayer extends Component {
   }
 }
 
-OlOutdoorLayer.defaultProps = {};
+OlOutdoorLayer.defaultProps = {
+  env: OUTDOOR
+};
 
-OlOutdoorLayer.propTypes = {};
+OlOutdoorLayer.propTypes = {
+  env: PropTypes.string
+};
 
 OlOutdoorLayer.contextTypes = {
   map: PropTypes.object

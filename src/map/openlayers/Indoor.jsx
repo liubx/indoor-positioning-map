@@ -32,6 +32,10 @@ class OlIndoorLayer extends Component {
     this.loadMap(newProps.map);
   }
 
+  componentWillUnmount() {
+    this.context.map.removeLayer(this.layer);
+  }
+
   loadMap(map) {
     of(map)
       .pipe(

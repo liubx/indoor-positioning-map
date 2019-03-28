@@ -2,6 +2,10 @@ export const LEAFLET = 'leaflet';
 
 export const OPENLAYERS = 'openlayers';
 
+export const INDOOR = 'indoor';
+
+export const OUTDOOR = 'outdoor';
+
 export const HEAT_MAP_LAYER = 'heatmap';
 
 export const HISTORY_LAYER = 'history';
@@ -38,9 +42,7 @@ export const SUPPORTER_LAYER = 'supporter';
 
 export const USER_LAYER = 'user';
 
-export const TIANDITU_URL = `${
-  window.location.protocol
-}//t{0-7}.tianditu.com`;
+export const TIANDITU_URL = `${window.location.protocol}//t{0-7}.tianditu.com`;
 
 export const BASE_MAP_URL = `${
   window.location.protocol

@@ -45,16 +45,29 @@ import {
   TARGET_LAYER,
   TRIGGER_LAYER,
   USER_LAYER,
-  OUTDOOR_LAYER
+  OUTDOOR_LAYER,
+  OUTDOOR,
+  INDOOR
 } from '../constant';
 import OlHeatmapLayer from './Heatmap';
 import OlHistoryLayer from './History';
 
 const Openlayers = (props) => (
   <OlMapLayer maxZoom={props.maxZoom} minZoom={props.minZoom} zoom={props.zoom}>
-    <OlOutdoorLayer key={OUTDOOR_LAYER} />
-    <OlIndoorLayer map={props.map} key={INDOOR_LAYER} />
-    {props.showPoi ? <OlPoiLayer map={props.map} key={POI_LAYER} /> : null}
+    <OlOutdoorLayer env={props.env} key={OUTDOOR_LAYER} />
+    {props.env === INDOOR ? (
+      <OlIndoorLayer map={props.map} key={INDOOR_LAYER} />
+    ) : null}
+    {props.env === INDOOR && props.showPoi ? (
+      <OlPoiLayer map={props.map} key={POI_LAYER} />
+    ) : null}
+    {props.env === INDOOR ? (
+      <OlTriggerLayer
+        position={props.position}
+        map={props.map}
+        key={TRIGGER_LAYER}
+      />
+    ) : null}
     <OlLabelLayer
       data={props.lamps.filter(
         (data) =>
@@ -145,11 +158,6 @@ const Openlayers = (props) => (
       onSingleClick={props.onSingleClick}
       onDoubleClick={props.onDoubleClick}
     />
-    <OlTriggerLayer
-      position={props.position}
-      map={props.map}
-      key={TRIGGER_LAYER}
-    />
     <OlHeatmapLayer heatmap={props.heatmap} key={HEAT_MAP_LAYER} />
     <OlHistoryLayer history={props.history} key={HISTORY_LAYER} />
     <OlControlLayer
@@ -161,6 +169,7 @@ const Openlayers = (props) => (
 );
 
 Openlayers.defaultProps = {
+  env: OUTDOOR,
   map: null,
   heatmap: null,
   history: null,
@@ -184,6 +193,7 @@ Openlayers.defaultProps = {
 };
 
 Openlayers.propTypes = {
+  env: PropTypes.string,
   map: PropTypes.object,
   heatmap: PropTypes.object,
   history: PropTypes.object,

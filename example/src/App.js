@@ -4,6 +4,6 @@ import Map from 'indoor-positioning-map';
 
 export default class App extends Component {
   render() {
-    return <Map type={'leaflet'} />
+    return <Map />
   }
 }

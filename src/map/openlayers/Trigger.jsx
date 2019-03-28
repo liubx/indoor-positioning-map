@@ -1,4 +1,4 @@
-/* global window XMLSerializer */
+/* global XMLSerializer */
 /* eslint no-undef: "error" */
 import { Component } from 'react';
 import { of, fromEvent } from 'rxjs';
@@ -16,7 +16,7 @@ import { BASE_MAP_URL } from '../constant';
 class OlTriggerLayer extends Component {
   componentDidMount() {
     this.source = new VectorSource();
-    const layer = new VectorLayer({
+    this.layer = new VectorLayer({
       source: this.source,
       style: new Style({
         fill: new Stroke({
@@ -24,7 +24,7 @@ class OlTriggerLayer extends Component {
         })
       })
     });
-    this.context.map.addLayer(layer);
+    this.context.map.addLayer(this.layer);
     this.loadTrigger(this.props.map);
     fromEvent(this.context.map, 'singleclick')
       .pipe(
@@ -69,6 +69,10 @@ class OlTriggerLayer extends Component {
     if (newProps.position !== this.props.position) {
       this.checkPosition(newProps.position);
     }
+  }
+
+  componentWillUnmount() {
+    this.context.map.removeLayer(this.layer);
   }
 
   loadTrigger(indoormap) {
