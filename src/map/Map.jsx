@@ -67,6 +67,7 @@ class Map extends Component {
     window.loadMap = (data) => {
       window.setIndoor();
       this.setState({
+        env: INDOOR,
         map: data
       });
     };
